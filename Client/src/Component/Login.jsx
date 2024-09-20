@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../assets/digitalflakelogo.png"; // Add your logo file path
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,12 +59,12 @@ const Login = () => {
           </div>
 
           <div className="flex justify-end mb-4">
-            <a
-              href="#"
+            <Link
+              to={"/login/forgotpassword"}
               className="text-purple-950 hover:text-purple-950 text-sm text-right"
             >
               Forgot Password?
-            </a>
+            </Link>
           </div>
 
           <button
