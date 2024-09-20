@@ -14,30 +14,29 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-purple-950 p-4 text-white flex justify-between items-center">
-    {/* Left Side: Brand/Logo */}
-    <div className="flex items-center">
-      <img 
-        className="h-8 w-auto" 
-        src="/images/digitalflake.png" 
-        alt="Digital Flake Logo" 
-      />
-    </div>
-
-    {/* Right Side: User/Logout section */}
-    <div className="flex items-center">
-      <button 
-        onClick={handleLogout} 
-        className="flex items-center space-x-2 text-white hover:text-gray-300"
-      >
+    <nav className="bg-customPurple p-4 text-white flex justify-between items-center">
+      <div className="flex items-center">
         <img 
-          className="h-8 w-8" 
-          src="/images/userlogo.png" 
-          alt="User Profile" 
+          className="h-auto w-24 sm:w-28 md:w-32 lg:w-40" 
+          src="/images/digitalflake.png" 
+          alt="Digital Flake Logo" 
         />
-      </button>
-    </div>
-  </nav>
+      </div>
+
+      <div className="flex items-center">
+        <button 
+          onClick={handleLogout} 
+          className="flex items-center space-x-2 text-white hover:text-gray-300"
+        >
+          <img 
+            className="h-auto w-8 sm:w-10 md:w-12 lg:w-10" 
+            src="/images/userlogo.png" 
+            alt="User Profile" 
+          />
+          
+        </button>
+      </div>
+    </nav>
   );
 };
 
