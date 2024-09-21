@@ -30,6 +30,14 @@ const CategoryGrid = () => {
     </div>
   ) : (
     <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold">Category</h1>
+        <Link to={"/addcategory"}>
+        <button className="bg-purple-700 text-white px-4 py-2 rounded">
+          Add New
+        </button>
+        </Link>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
