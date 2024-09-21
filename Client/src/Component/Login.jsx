@@ -1,13 +1,43 @@
 import React, { useState } from "react";
 import logo from "../assets/digitalflakelogo.png"; // Add your logo file path
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.token) {
+        setMessage("Login successful!");
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error) {
+      setMessage("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -20,7 +50,7 @@ const Login = () => {
           </h2>
         </div>
 
-        <form className="mt-6">
+        <form onSubmit={handleLogin} className="mt-6">
           <div className="mb-4 relative">
             <label
               className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
@@ -33,6 +63,9 @@ const Login = () => {
               id="email"
               className="w-full px-4 pt-4 pb-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
@@ -48,6 +81,9 @@ const Login = () => {
               id="password"
               className="w-full px-4 pt-4 pb-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <button
               type="button"
@@ -57,6 +93,8 @@ const Login = () => {
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>
+
+          {message && <p className="text-center text-red-600">{message}</p>}
 
           <div className="flex justify-end mb-4">
             <Link
