@@ -16,7 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to MongoDB
 connectDB();
-
 // Use user routes
 app.use('/api/users', userRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images

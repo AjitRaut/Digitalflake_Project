@@ -1,10 +1,11 @@
+// routes/user.js
 const express = require('express');
-const { register , login } = require('../Controllers/authcontroller');
+const { register, login,requestPasswordReset } = require('../Controllers/authcontroller');
 
 const router = express.Router();
 
-// Register route
 router.post('/register', register);
 router.post('/login', login);
+router.post('/forgot-password', requestPasswordReset); // Add this line
 
 module.exports = router;
