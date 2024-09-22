@@ -1,52 +1,124 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditCategory = () => {
+  const { id } = useParams(); // This will be the numeric id
+  const navigate = useNavigate();
   const [categoryName, setCategoryName] = useState("");
-  const [status, setStatus] = useState("Active");
   const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [status, setStatus] = useState("inactive");
+  const [categoryMongoId, setCategoryMongoId] = useState(null);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        // Use the numeric id to fetch the category
+        const response = await fetch(`http://localhost:5000/api/categories/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch category");
+        }
+        const data = await response.json();
+        setCategoryName(data.name);
+        setImage(data.image);
+        setStatus(data.status);
+        setCategoryMongoId(data._id); // Store the MongoDB _id
+      } catch (error) {
+        console.error("Error fetching category:", error);
+        toast.error("Error fetching category details");
+      }
+    };
+
+    fetchCategory();
+  }, [id]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(URL.createObjectURL(file));
+    
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
+        return;
+      }
+  
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast.error("File size exceeds 10MB. Please upload a smaller image.");
+        return;
+      }
+  
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", categoryName);
+    formData.append("status", status);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    try {
+      // Use the MongoDB _id for the update operation
+      const response = await fetch(`http://localhost:5000/api/categories/${categoryMongoId}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update category");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      toast.success("Category updated successfully!");
+      navigate("/category");
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error(error.message || "Error updating category. Please try again.");
+    }
   };
 
   return (
-    <div className="bg-white p-8 shadow-md rounded-lg max-w-4xl mx-auto mt-10">
-      <h2 className="text-2xl font-semibold mb-6">Edit Category</h2>
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
+          <h2 className="text-xl font-semibold mb-8">Edit Category</h2>
 
-      <div className="flex flex-col md:flex-row justify-between items-start space-y-6 md:space-y-0 md:space-x-8">
-        {/* Category Name with Label Inside Input Border */}
-        <div className="relative w-full md:w-1/4">
-          <input
-            type="text"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder=" "
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-gray-600 text-sm">
-            Category Name
-          </label>
-        </div>
-
-        {/* Image Upload Section */}
-        <div className="flex space-x-4">
-          {image && (
-            <div className="border border-gray-300 w-24 h-24 flex items-center justify-center">
-              <img
-                src={image}
-                alt="Uploaded"
-                className="w-full h-full object-cover"
+          <div className="grid grid-cols-2 gap-8">
+            <div className="col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category Name
+              </label>
+              <input
+                type="text"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+                placeholder="Enter category name"
               />
             </div>
-          )}
-          <div className="flex flex-col items-center">
-            <label htmlFor="file-input" className="cursor-pointer">
-              <div className="w-24 h-24 border-2 border-dashed border-gray-300 flex items-center justify-center rounded hover:border-purple-500 transition-colors">
-                {!image ? (
-                  <div className="text-center">
+
+            <div className="col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Upload Image
+              </label>
+              <div className="flex flex-col items-center">
+                <label htmlFor="file-input" className="cursor-pointer">
+                  <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
                     <svg
-                      className="w-10 h-10 text-gray-400 mb-2"
+                      className="w-12 h-12 text-gray-400 mb-2"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -60,49 +132,65 @@ const EditCategory = () => {
                       />
                     </svg>
                     <p className="text-gray-500 text-sm">Upload an image</p>
-                    <p className="text-gray-400 text-xs">Maximum size: 10MB</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      Maximum size: 10MB
+                    </p>
                   </div>
-                ) : (
+                </label>
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </div>
+
+              {image && (
+                <div className="mt-4">
                   <img
                     src={image}
-                    alt="Uploaded"
-                    className="w-full h-full object-cover rounded border border-gray-300"
+                    alt="Category"
+                    className="w-24 h-24 object-cover rounded border border-gray-300"
                   />
-                )}
-              </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
             </label>
-            <input
-              id="file-input"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="flex justify-end mt-8 space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate("/category")}
+              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-purple-700 text-white rounded-full"
+            >
+              Save
+            </button>
           </div>
         </div>
-
-        {/* Status Dropdown */}
-        <div className="relative w-full md:w-1/4">
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-gray-600 text-sm">
-            Status
-          </label>
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-end mt-8 space-x-4">
-        <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-600">Cancel</button>
-        <button className="px-6 py-2 bg-purple-700 text-white rounded-full">Save</button>
-      </div>
-    </div>
+      </form>
+      <ToastContainer />
+    </>
   );
 };
 
