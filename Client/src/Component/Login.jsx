@@ -1,14 +1,24 @@
-import React, { useState } from "react";
-import logo from "../assets/digitalflakelogo.png"; // Add your logo file path
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux"; // Import useDispatch
+import logo from "../assets/digitalflakelogo.png";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../Features/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch(); // Initialize dispatch
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const isRegistered = localStorage.getItem("isRegistered");
+    if (!isRegistered) {
+      navigate("/register");
+    }
+  }, [navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -27,15 +37,22 @@ const Login = () => {
       });
 
       const data = await response.json();
+      console.log("Response Data:", data);
+      console.log("Response Status:", response.status);
 
-      if (data.token) {
-        setMessage("Login successful!");
-        localStorage.setItem("token", data.token);
-        navigate("/home");
+      if (response.ok) {
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          dispatch(login());
+          navigate("/home");
+        } else {
+          setMessage(data.message || "Login failed. Please try again.");
+        }
       } else {
-        setMessage(data.message);
+        setMessage(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
+      console.error("Error during login:", error);
       setMessage("Login failed. Please try again.");
     }
   };
@@ -104,7 +121,15 @@ const Login = () => {
               Forgot Password?
             </Link>
           </div>
-
+          <div className="flex justify-center mb-4">
+    <p className="text-sm text-gray-600">Don't have an account? </p>
+    <Link
+      to={"/register"}
+      className="text-purple-950 hover:text-purple-700 text-sm ml-1"
+    >
+      Sign Up
+    </Link>
+  </div>
           <button
             type="submit"
             className="w-full bg-purple-950 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded-md"

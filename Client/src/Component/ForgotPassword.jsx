@@ -7,9 +7,9 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch("http://localhost:5000/forgot-password", {
+      const response = await fetch("http://localhost:5000/api/users/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,6 +26,7 @@ const ForgotPassword = () => {
       setMessage("Failed to send reset link. Try again.");
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-[85vh] bg-gray-100">

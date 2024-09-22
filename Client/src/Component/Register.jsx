@@ -24,10 +24,11 @@ const Register = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
-        // Handle successful registration (e.g., redirect or show a message)
+        // Handle successful registration
+        localStorage.setItem('isRegistered', 'true'); // Set registration flag
         console.log(data);
         navigate('/login'); // Redirect to login page after successful registration
       } else {
@@ -37,6 +38,7 @@ const Register = () => {
       console.error("Registration failed:", error);
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-[85vh] bg-gray-100">
