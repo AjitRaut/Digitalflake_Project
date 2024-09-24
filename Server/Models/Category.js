@@ -5,6 +5,10 @@ const CategorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  subcategory: { // New field for subcategory
+    type: String,
+    required: false,
+  },
   image: {
     type: String,
     required: true,

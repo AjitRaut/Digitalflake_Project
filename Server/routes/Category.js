@@ -5,7 +5,8 @@ const {
   addCategory, 
   getCategories, 
   getCategoryById, 
-  updateCategory 
+  updateCategory ,
+  deleteCategory
 } = require('../Controllers/CategoryController');
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.post('/', upload.single('image'), addCategory);
 router.get('/', getCategories);
 router.get('/:id', getCategoryById); // New route to get category by numeric id
 router.put('/:id', upload.single('image'), updateCategory);
+router.delete('/:id', deleteCategory)
 
 module.exports = router;
