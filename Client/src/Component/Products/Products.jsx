@@ -1,228 +1,232 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { useTable, useSortBy, useGlobalFilter } from "react-table";
+import { BiSearch } from "react-icons/bi";
+import { FiEdit } from "react-icons/fi";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
-const Products = () => {
-  const products = [
-    {
-      id: 123,
-      name: "Motorola edge",
-      image: null,
-      subCategory: "Motorola",
-      category: "Mobile",
-      status: "Active",
-    },
-    {
-      id: 124,
-      name: "HP Pavillion",
-      image: "/api/placeholder/50/30",
-      subCategory: "HP",
-      category: "Laptop",
-      status: "Inactive",
-    },
-    {
-      id: 125,
-      name: "Apple",
-      image: "/api/placeholder/50/30",
-      subCategory: "Fruits",
-      category: "Fruit",
-      status: "Inactive",
-    },
-  ];
+const ProductGrid = () => {
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = () => {
+    axios
+      .get("http://localhost:5000/api/products")
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("Error fetching products:", error));
+  };
+
+  // Filter products based on the search term
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [products, searchTerm]);
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteId) {
+      try {
+        await axios.delete(`http://localhost:5000/api/products/${deleteId}`);
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product._id !== deleteId)
+        );
+        setShowDeleteModal(false);
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    }
+  };
+
+  const data = useMemo(() => filteredProducts, [filteredProducts]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Id",
+        accessor: "_id",
+      },
+      {
+        Header: "Product Name",
+        accessor: "name",
+      },
+      {
+        Header: "Category",
+        accessor: "category",
+      },
+      {
+        Header: "Subcategory", // New subcategory column
+        accessor: "subcategory",
+      },
+      {
+        Header: "Image",
+        accessor: "image",
+        Cell: ({ value }) => (
+          <img src={value} alt="Product" className="w-10 h-10" />
+        ),
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        Cell: ({ value }) => (
+          <span
+            className={value === "active" ? "text-green-500" : "text-red-500"}
+          >
+            {value === "active" ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <div>
+            <Link to={`/editproduct/${row.original._id}`}>
+              <button className="mr-2 text-gray-500">
+                <FiEdit />
+              </button>
+            </Link>
+            <button
+              className="text-gray-500"
+              onClick={() => handleDelete(row.original._id)}
+            >
+              <RiDeleteBin5Line />
+            </button>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data,
+      },
+      useSortBy
+    );
 
   return (
-    <div className="p-6 bg-white h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold">Product</h1>
         <div className="flex items-center">
-          <div className="mr-4">
-            <svg
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21 16.5C21 16.9644 20.7637 17.4093 20.3469 17.7374C19.9301 18.0655 19.3601 18.2361 18.7664 18.2361H5.23361C4.63987 18.2361 4.06995 18.0655 3.65311 17.7374C3.23627 17.4093 3 16.9644 3 16.5V7.5C3 7.03557 3.23627 6.59068 3.65311 6.26256C4.06995 5.93444 4.63987 5.76389 5.23361 5.76389H18.7664C19.3601 5.76389 19.9301 5.93444 20.3469 6.26256C20.7637 6.59068 21 7.03557 21 7.5V16.5Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M3 9.22222H21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7 13.6111H17"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <h1 className="text-xl font-semibold">Product</h1>
-        </div>
-        <div className="flex items-center">
-          <div className="relative mr-4">
+          <div className="relative">
+            <BiSearch className="absolute left-3 top-2 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
           </div>
-          <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-300">
-            Add New
-          </button>
+          <Link to="/addproduct">
+            <button className="bg-purple-700 text-white px-4 py-2 rounded ml-4">
+              Add New
+            </button>
+          </Link>
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead className="bg-yellow-100">
-            <tr>
-              {[
-                "Id",
-                "Product name",
-                "Image",
-                "Sub Category",
-                "Category",
-                "Status",
-                "Action",
-              ].map((header) => (
-                <th
-                  key={header}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div className="flex items-center">
-                    {header}
-                    <div className="ml-1 flex flex-col">
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 15l7-7 7 7"
-                        ></path>
-                      </svg>
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {product.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {product.image ? (
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-10 w-10 rounded-full"
-                    />
-                  ) : (
-                    <div className="h-10 w-10 rounded-full bg-gray-200"></div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.subCategory}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.category}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      product.status === "Active"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          {...getTableProps()}
+        >
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-yellow-100"
+              >
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="p-2 border"
                   >
-                    {product.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-indigo-600 hover:text-indigo-900 mr-2">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <button className="text-red-600 hover:text-red-900">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      ></path>
-                    </svg>
-                  </button>
-                </td>
+                    {column.render("Header")}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
+                  </th>
+                ))}
               </tr>
             ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()} className="border-b">
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()} className="p-2 border">
+                      {cell.render("Cell")}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+          <div className="bg-white p-5 rounded-lg shadow-xl">
+            <div className="flex items-center mb-4">
+              <svg
+                className="w-6 h-6 text-red-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                ></path>
+              </svg>
+              <h3 className="text-lg font-semibold">Delete</h3>
+            </div>
+            <p className="mb-4 text-gray-600">Are you sure you want to delete?</p>
+            <div className="flex justify-end">
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md mr-2"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-purple-600 text-white rounded-md"
+                onClick={confirmDelete}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-export default Products;
+
+export default ProductGrid;

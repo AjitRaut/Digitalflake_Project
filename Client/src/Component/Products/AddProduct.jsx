@@ -1,90 +1,151 @@
-import React from 'react';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
+  const [productName, setProductName] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [filteredSubcategories, setFilteredSubcategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/categories");
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("Error fetching categories.");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch all subcategories when component mounts
+  useEffect(() => {
+    const fetchSubcategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/subcategories");
+        setSubcategories(response.data); // Set fetched subcategories to state
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+        toast.error("Error fetching subcategories.");
+      }
+    };
+    fetchSubcategories();
+  }, []);
+
+  // Filter subcategories based on selected category
+ // Filter subcategories based on selected category
+useEffect(() => {
+  if (!selectedCategory) {
+    setFilteredSubcategories([]);
+    return;
+  }
+  
+  // Filter subcategories based on the selected category's ID
+  const filtered = subcategories.filter(
+    (subcategory) => subcategory.category._id === selectedCategory // Update to access the nested category ID
+  );
+  
+  setFilteredSubcategories(filtered);
+  setSelectedSubcategory(""); // Reset subcategory when category changes
+}, [selectedCategory, subcategories]);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const productData = {
+      name: productName,
+      _id: selectedCategory,
+      subcategoryId: selectedSubcategory,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) throw new Error("Network response was not ok");
+
+      toast.success("Product added successfully!");
+      setProductName("");
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+    } catch (error) {
+      toast.error("Error adding product. Please try again.");
+    }
+  };
+
   return (
-    <div className="p-6 bg-white h-screen">
-      <div className="flex items-center mb-6">
-        <button className="mr-2">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>
-        </button>
-        <h1 className="text-xl font-semibold">Add Product</h1>
+    <form onSubmit={handleSubmit}>
+      <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
+        <h2 className="text-xl font-semibold mb-8">Add Product</h2>
+        <div className="grid grid-cols-2 gap-8">
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+            <input
+              type="text"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+              placeholder="Enter product name"
+              required
+            />
+          </div>
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+              required
+            >
+              <option value="" disabled>Select a category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>{category.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
+            <select
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+              required
+            >
+              <option value="" disabled>Select a subcategory</option>
+              {filteredSubcategories.length > 0 ? (
+                filteredSubcategories.map((subcategory) => (
+                  <option key={subcategory._id} value={subcategory._id}>{subcategory.subcatname}</option> // Update to use subcatname
+                ))
+              ) : (
+                <option disabled>No subcategories available</option>
+              )}
+            </select>
+          </div>
+        </div>
+        <div className="flex justify-end mt-8 space-x-4">
+          <Link to="/products">
+            <button type="button" className="px-6 py-2 border border-gray-300 rounded-full text-gray-600">Cancel</button>
+          </Link>
+          <button type="submit" className="px-6 py-2 bg-purple-700 text-white rounded-full">Save</button>
+        </div>
       </div>
-      
-      <form className="space-y-4">
-        <div>
-          <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
-            Product Name
-          </label>
-          <input
-            type="text"
-            id="productName"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-          />
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-              Category
-            </label>
-            <div className="relative">
-              <select
-                id="category"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 appearance-none"
-              >
-                <option>Select category</option>
-              </select>
-              <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-          </div>
-          
-          <div>
-            <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700 mb-1">
-              Subcategory
-            </label>
-            <div className="relative">
-              <select
-                id="subcategory"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 appearance-none"
-              >
-                <option>Select subcategory</option>
-              </select>
-              <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <div className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-md">
-            <span>Vivo</span>
-            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-          <div className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-md">
-            <span>Realme</span>
-            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-        </div>
-      </form>
-      
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 flex justify-end space-x-4">
-        <button className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-          Cancel
-        </button>
-        <button className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-          Save
-        </button>
-      </div>
-    </div>
+      <ToastContainer />
+    </form>
   );
 };
 
