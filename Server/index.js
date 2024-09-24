@@ -19,8 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 connectDB();
 // Use user routes
 app.use('/api/users', userRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
+app.use('/uploads', (req, res, next) => {
+    console.log('Accessing uploads:', req.url);
+    next();
+  }, express.static(path.join(__dirname, '..', 'uploads')));
 // Serve uploaded images
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subcategoryRoutes);

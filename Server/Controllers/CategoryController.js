@@ -13,7 +13,7 @@ const addCategory = async (req, res) => {
     }
 
     // Adjust the image path to be a valid URL
-    const image = `http://localhost:5000/${req.file.path.replace(/\\/g, "/")}`;
+    const image = `${req.file.path.replace(/\\/g, "/")}`;
   console.log(image)
     // Increment the counter
     const counter = await Counter.findOneAndUpdate(
@@ -44,11 +44,12 @@ const addCategory = async (req, res) => {
 const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    // const baseUrl = `${req.protocol}://${req.get('host')}`;
     const formattedCategories = categories.map((category, index) => ({
       id: index + 1,
       ...category._doc,
-      image: category.image ? `${baseUrl}${category.image}` : null,
+      // image: category.image ? `${baseUrl}${category.image}` : null,
+      image: category.image ,
     }));
     res.json(formattedCategories);
   } catch (error) {
@@ -86,7 +87,7 @@ const updateCategory = async (req, res) => {
 
     if (req.file) {
       const imagePath = path.join("uploads", req.file.filename);
-      updateData.image = `http://localhost:5000/${imagePath.replace(
+      updateData.image = `/${imagePath.replace(
         /\\/g,
         "/"
       )}`;
