@@ -13,7 +13,7 @@ const addCategory = async (req, res) => {
     }
 
     // Adjust the image path to be a valid URL
-    const image = `${req.file.path.replace(/\\/g, "/")}`;
+    const image = `${req.file.path}`;
   console.log(image)
     // Increment the counter
     const counter = await Counter.findOneAndUpdate(
