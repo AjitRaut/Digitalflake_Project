@@ -27,7 +27,7 @@ const addCategory = async (req, res) => {
     const newCategory = new Category({
       id: newCategoryId,
       name,
-      image,
+      image : `http://localhost:5000/uploads/${req.file.filename}`,
       status: "inactive",
     });
     await newCategory.save();
@@ -117,7 +117,6 @@ const deleteCategory = async (req, res) => {
   try {
     const id = req.params.id;
     const category = await Category.findByIdAndDelete({ _id: id });
-    // const category = await Category.findByIdAndDelete(req.params.id);
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }

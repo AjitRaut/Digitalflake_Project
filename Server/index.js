@@ -25,7 +25,7 @@ app.use(
     console.log("Accessing uploads:", req.url);
     next();
   },
-  express.static(path.join(__dirname,  "../uploads"))
+  express.static("./uploads")
 );
 // Serve uploaded images
 app.use("/api/categories", categoryRoutes);

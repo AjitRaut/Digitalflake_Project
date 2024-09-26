@@ -72,13 +72,12 @@ const CategoryGrid = () => {
         Cell: ({ value }) => {
           console.log(value);
           <img 
-            src={value ? logo :  `http://localhost:5000/${value}` } 
+            src={value} 
             alt="Category" 
             className="w-10 h-10" 
           />
         },
       },
-      ,
       {
         Header: "Status",
         accessor: "status",
