@@ -5,6 +5,7 @@ import { useTable, useSortBy, useGlobalFilter } from "react-table";
 import { BiSearch } from "react-icons/bi"; // Import a search icon
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import logo from "../../assets/digitalflakelogo.png"
 
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
@@ -22,6 +23,7 @@ const CategoryGrid = () => {
       .then((response) => setCategories(response.data))
       .catch((error) => console.error("Error fetching categories:", error));
   };
+  console.log(categories)
 
   // Filter categories based on the search term
   const filteredCategories = useMemo(() => {
@@ -67,10 +69,16 @@ const CategoryGrid = () => {
       {
         Header: "Image",
         accessor: "image",
-        Cell: ({ value }) => (
-          <img src={value} alt="Category" className="w-10 h-10" />
-        ),
+        Cell: ({ value }) => {
+          console.log(value);
+          <img 
+            src={value ? logo :  `http://localhost:5000/${value}` } 
+            alt="Category" 
+            className="w-10 h-10" 
+          />
+        },
       },
+      ,
       {
         Header: "Status",
         accessor: "status",

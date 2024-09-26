@@ -86,7 +86,7 @@ const SubcategoryGrid = () => {
       },
       {
         Header: "Category Name",
-        accessor: "categoryName", // Use the new accessor
+        accessor: "category.name", // Use the new accessor
       },
       {
         Header: "Image",

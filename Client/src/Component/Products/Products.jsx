@@ -22,6 +22,7 @@ const ProductGrid = () => {
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("Error fetching products:", error));
   };
+  console.log("Products",products)
 
   // Filter products based on the search term
   const filteredProducts = useMemo(() => {
@@ -63,15 +64,15 @@ const ProductGrid = () => {
       },
       {
         Header: "Category",
-        accessor: "category",
+        accessor: "categoryId.name",
       },
       {
         Header: "Subcategory", // New subcategory column
-        accessor: "subcategory",
+        accessor: "subcategoryId.subcatname",
       },
       {
         Header: "Image",
-        accessor: "image",
+        accessor: "categoryId.image",
         Cell: ({ value }) => (
           <img src={value} alt="Product" className="w-10 h-10" />
         ),

@@ -3,7 +3,7 @@ import "./App.css";
 import Navbar from "./Component/Navbar";
 import { Provider } from "react-redux";
 import { store } from "./App/store";
-import Sidebar from "./Component/sidebar";
+import Sidebar from "./Component/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { login, logout } from "./Features/Authslice";

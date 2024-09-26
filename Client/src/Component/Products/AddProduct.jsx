@@ -17,8 +17,10 @@ const AddProduct = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/categories");
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
+        console.log(categories);
         setCategories(data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -32,8 +34,11 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/subcategories");
+        const response = await axios.get(
+          "http://localhost:5000/api/subcategories"
+        );
         setSubcategories(response.data); // Set fetched subcategories to state
+        console.log(subcategories);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
         toast.error("Error fetching subcategories.");
@@ -43,28 +48,33 @@ const AddProduct = () => {
   }, []);
 
   // Filter subcategories based on selected category
- // Filter subcategories based on selected category
-useEffect(() => {
-  if (!selectedCategory) {
-    setFilteredSubcategories([]);
-    return;
-  }
-  
-  // Filter subcategories based on the selected category's ID
-  const filtered = subcategories.filter(
-    (subcategory) => subcategory.category._id === selectedCategory // Update to access the nested category ID
-  );
-  
-  setFilteredSubcategories(filtered);
-  setSelectedSubcategory(""); // Reset subcategory when category changes
-}, [selectedCategory, subcategories]);
+  // Filter subcategories based on selected category
+  // Filter subcategories based on selected category
+  useEffect(() => {
+    console.log("Selected Category:", selectedCategory);
+    console.log("Subcategories:", subcategories);
 
+    if (!selectedCategory) {
+      setFilteredSubcategories([]);
+      return;
+    }
+
+    const filtered = subcategories.filter(
+      (subcategory) =>
+        subcategory.category && subcategory.category._id === selectedCategory
+    );
+
+    console.log("Filtered Subcategories:", filtered);
+
+    setFilteredSubcategories(filtered);
+    setSelectedSubcategory(""); // Reset subcategory when category changes
+  }, [selectedCategory, subcategories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const productData = {
       name: productName,
-      _id: selectedCategory,
+      categoryId: selectedCategory,
       subcategoryId: selectedSubcategory,
     };
 
@@ -94,7 +104,9 @@ useEffect(() => {
         <h2 className="text-xl font-semibold mb-8">Add Product</h2>
         <div className="grid grid-cols-2 gap-8">
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product Name
+            </label>
             <input
               type="text"
               value={productName}
@@ -105,43 +117,67 @@ useEffect(() => {
             />
           </div>
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Category
+            </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               required
             >
-              <option value="" disabled>Select a category</option>
+              <option value="" disabled>
+                Select a category
+              </option>
               {categories.map((category) => (
-                <option key={category._id} value={category._id}>{category.name}</option>
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
               ))}
             </select>
           </div>
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Subcategory
+            </label>
             <select
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               required
             >
-              <option value="" disabled>Select a subcategory</option>
+              <option value="" disabled>
+                Select a subcategory
+              </option>
               {filteredSubcategories.length > 0 ? (
                 filteredSubcategories.map((subcategory) => (
-                  <option key={subcategory._id} value={subcategory._id}>{subcategory.subcatname}</option> // Update to use subcatname
+                  <option key={subcategory._id} value={subcategory._id}>
+                    {subcategory.subcatname}
+                  </option>
                 ))
               ) : (
-                <option disabled>No subcategories available</option>
+                <option disabled>
+                  No subcategories available for the selected category
+                </option>
               )}
             </select>
           </div>
         </div>
         <div className="flex justify-end mt-8 space-x-4">
           <Link to="/products">
-            <button type="button" className="px-6 py-2 border border-gray-300 rounded-full text-gray-600">Cancel</button>
+            <button
+              type="button"
+              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
+            >
+              Cancel
+            </button>
           </Link>
-          <button type="submit" className="px-6 py-2 bg-purple-700 text-white rounded-full">Save</button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-purple-700 text-white rounded-full"
+          >
+            Save
+          </button>
         </div>
       </div>
       <ToastContainer />
