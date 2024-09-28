@@ -69,14 +69,9 @@ const CategoryGrid = () => {
       {
         Header: "Image",
         accessor: "image",
-        Cell: ({ value }) => {
-          console.log(value);
-          <img 
-            src={value} 
-            alt="Category" 
-            className="w-10 h-10" 
-          />
-        },
+        Cell: ({ value }) => (
+          <img src={value} alt="Product" className="w-10 h-10" />
+        ),
       },
       {
         Header: "Status",

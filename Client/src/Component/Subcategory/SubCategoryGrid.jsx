@@ -35,6 +35,7 @@ const SubcategoryGrid = () => {
       console.error("Error fetching subcategories:", error);
     }
   };
+  console.log(subcategories)
 
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat._id === categoryId);
@@ -92,7 +93,7 @@ const SubcategoryGrid = () => {
         Header: "Image",
         accessor: "image",
         Cell: ({ value }) => (
-          <img src={value} alt="Subcategory" className="w-10 h-10" />
+          <img src={value} alt="Product" className="w-10 h-10" />
         ),
       },
       {

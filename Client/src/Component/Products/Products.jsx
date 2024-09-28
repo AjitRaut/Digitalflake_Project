@@ -80,13 +80,14 @@ const ProductGrid = () => {
       {
         Header: "Status",
         accessor: "status",
-        Cell: ({ value }) => (
+        Cell: ({ value }) => {
+          console.log(value);
           <span
             className={value === "active" ? "text-green-500" : "text-red-500"}
           >
             {value === "active" ? "Active" : "Inactive"}
           </span>
-        ),
+        },
       },
       {
         Header: "Action",
