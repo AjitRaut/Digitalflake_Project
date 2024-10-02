@@ -1,10 +1,31 @@
 const express = require("express");
-const router = express.Router();
-const { createProduct , getProducts , deleteproduct} = require("../Controllers/Product");
+const multer = require("multer");
+const {
+  createProduct,
+  getProduct,
+  getProducts,
+  updateProduct,
+  deleteProduct,
+} = require("../Controllers/Product");
 
-// POST /api/products - Create a new product
-router.post("/", createProduct);
-router.get("/" , getProducts)
-router.delete("/:id" , deleteproduct)
+const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = "./uploads";
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+router.post("/", upload.single("image"), createProduct); // Keep createProduct unchanged
+router.get("/", getProducts); // Route to get all products
+router.get("/:id", getProduct); // Route to get product by ID
+router.put("/:id", upload.single("image"), updateProduct); // Route to update product
+router.delete("/:id", deleteProduct); // Keep deleteProduct unchanged
 
 module.exports = router;

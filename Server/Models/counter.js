@@ -1,8 +1,8 @@
-// models/Counter.js
 const mongoose = require('mongoose');
 
 const counterSchema = new mongoose.Schema({
-  seq: { type: Number, default: 0 }
+  categorySeq: { type: Number, default: 0 },
+  subcategorySeq: { type: Number, default: 0 },
 });
 
 const Counter = mongoose.model('Counter', counterSchema);

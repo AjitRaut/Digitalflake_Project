@@ -1,4 +1,6 @@
 const Product = require("../Models/Product");
+const multer = require("multer");
+const path = require("path");
 
 // Create a new product
 const createProduct = async (req, res) => {
@@ -33,32 +35,50 @@ const createProduct = async (req, res) => {
 };
 
 // Get products with optional filters for category and subcategory
-const getProducts = async (req, res) => {
+const getProduct = async (req, res) => {
   try {
-    const { categoryId, subcategoryId } = req.query;
-
-    const filter = {};
-    if (categoryId) {
-      filter.categoryId = categoryId;
+    const product = await Product.findById(req.params.id).populate('categoryId subcategoryId');
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
-    if (subcategoryId) {
-      filter.subcategoryId = subcategoryId;
-    }
-
-    const products = await Product.find(filter)
-      .populate("categoryId")
-      .populate("subcategoryId");
-
-    res.status(200).json(products);
+    res.json(product);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching products.", error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-const deleteproduct = async (req, res) => {
+// Get all products
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find().populate('categoryId subcategoryId');
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const updateProduct = async (req, res) => {
+  try {
+    const { name, subcategoryId, categoryId, status } = req.body;
+    const updateData = { name, subcategoryId, categoryId, status };
+
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await Product.findByIdAndDelete({ _id: id });
@@ -69,12 +89,14 @@ const deleteproduct = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error deleting category", error: error.message });
+      .json({ message: "Error deleting product", error: error.message });
   }
 };
 
 module.exports = {
   createProduct,
+  getProduct,
   getProducts,
-  deleteproduct,
+  updateProduct,
+  deleteProduct,
 };

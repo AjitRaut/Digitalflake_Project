@@ -22,7 +22,7 @@ app.use("/api/users", userRoutes);
 app.use(
   "/uploads",
   (req, res, next) => {
-    console.log("Accessing uploads:", req.url);
+    
     next();
   },
   express.static("./uploads")
