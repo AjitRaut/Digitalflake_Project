@@ -79,14 +79,14 @@ const ProductGrid = () => {
       },
       {
         Header: "Status",
-        accessor: "status",
+        accessor: "categoryId.status",
         Cell: ({ value }) => {
-          console.log(value);
-          <span
-            className={value === "active" ? "text-green-500" : "text-red-500"}
-          >
-            {value === "active" ? "Active" : "Inactive"}
-          </span>
+          console.log(value); // Log the status value
+          return ( // Ensure you return the JSX element
+            <span className={value === "active" ? "text-green-500" : "text-red-500"}>
+              {value === "active" ? "Active" : "Inactive"}
+            </span>
+          );
         },
       },
       {

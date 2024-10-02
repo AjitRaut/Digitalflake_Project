@@ -1,141 +1,224 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FaChevronLeft, FaChevronDown, FaUpload } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const EditProduct = () =>  {
-    const { id } = useParams(); // This will be the numeric id
-    const navigate = useNavigate();
-    const [categoryName, setCategoryName] = useState("");
-    const [image, setImage] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-    const [status, setStatus] = useState("inactive");
-    const [categoryMongoId, setCategoryMongoId] = useState(null);
-  
-    useEffect(() => {
-      const fetchCategory = async () => {
-        try {
-          // Use the numeric id to fetch the category
-          const response = await fetch(`http://localhost:5000/api/categories/${id}`);
-          if (!response.ok) {
-            throw new Error("Failed to fetch category");
-          }
-          const data = await response.json();
-          setCategoryName(data.name);
-          setImage(data.image);
-          setStatus(data.status);
-          setCategoryMongoId(data._id); // Store the MongoDB _id
-        } catch (error) {
-          console.error("Error fetching category:", error);
-          toast.error("Error fetching category details");
-        }
-      };
-  
-      fetchCategory();
-    }, [id]);
-  
-    const handleImageUpload = (e) => {
-      const file = e.target.files[0];
-      
-      if (file) {
-        const validTypes = ["image/jpeg", "image/png", "image/gif"];
-        if (!validTypes.includes(file.type)) {
-          toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
-          return;
-        }
-    
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
-          toast.error("File size exceeds 10MB. Please upload a smaller image.");
-          return;
-        }
-    
-        setImageFile(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImage(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      const formData = new FormData();
-      formData.append("name", categoryName);
-      formData.append("status", status);
-      if (imageFile) {
-        formData.append("image", imageFile);
-      }
-  
+const EditProduct = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [productName, setProductName] = useState("");
+  const [subcategory, setSubcategory] = useState("");
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("active");
+  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
       try {
-        // Use the MongoDB _id for the update operation
-        const response = await fetch(`http://localhost:5000/api/categories/${categoryMongoId}`, {
-          method: "PUT",
-          body: formData,
-        });
-  
+        const response = await fetch(
+          `http://localhost:5000/api/products/${id}`
+        );
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to update category");
+          throw new Error("Failed to fetch product");
         }
-  
         const data = await response.json();
         console.log(data);
-        toast.success("Category updated successfully!");
-        navigate("/category");
+        setProductName(data.name);
+        setSubcategory(data.subcategoryId.subcatname
+        );
+        setCategory(data.categoryId.name);
+        setStatus(data.categoryId.status);
+        setImage(data.categoryId.image);
       } catch (error) {
-        console.error("Error updating category:", error);
-        toast.error(error.message || "Error updating category. Please try again.");
+        console.error("Error fetching product:", error);
+        toast.error("Error fetching product details");
       }
     };
-  
-    return (
-      <>
-        <form onSubmit={handleSubmit}>
-          <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
-            <h2 className="text-xl font-semibold mb-8">Edit Product</h2>
-  
-            <div className="grid grid-cols-2 gap-8">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category Name
-                </label>
-                <input
-                  type="text"
-                  value={categoryName}
-                  onChange={(e) => setCategoryName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  placeholder="Enter category name"
-                />
-              </div>
-  
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload Image
-                </label>
-                <div className="flex flex-col items-center">
+
+    fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/products/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB limit
+        toast.error("File size exceeds 10MB. Please upload a smaller image.");
+        return;
+      }
+
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", productName);
+    formData.append("subcategory", subcategory);
+    formData.append("category", category);
+    formData.append("status", status);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update product");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      toast.success("Product updated successfully!");
+      navigate("/products");
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error(error.message || "Error updating product. Please try again.");
+    }
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="flex items-center mb-6">
+        <FaChevronLeft className="w-5 h-5 mr-2" />
+        <h1 className="text-xl font-semibold">Edit Product</h1>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label
+              htmlFor="productName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Product Name
+            </label>
+            <input
+              type="text"
+              id="productName"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="subcategory"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Subcategory
+            </label>
+            <input
+              type="text"
+              id="subcategory"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={subcategory}
+              onChange={(e) => setSubcategory(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Category
+            </label>
+            <div className="relative">
+              <select
+                id="category"
+                className="w-full p-2 border border-gray-300 rounded-md appearance-none"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                <option value="">Select category</option>
+                {/* Add your category options here */}
+              </select>
+              <FaChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label
+              htmlFor="status"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Status
+            </label>
+            <div className="relative">
+              <select
+                id="status"
+                className="w-full p-2 border border-gray-300 rounded-md appearance-none"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <FaChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Upload Image
+            </label>
+            <div className="border border-dashed border-gray-300 rounded-md p-4">
+              <div className="flex items-center justify-center">
+                {image ? (
+                  <img
+                    src={image}
+                    alt="Product"
+                    className="w-24 h-28 object-cover mr-4"
+                  />
+                ) : (
+                  <div className="w-24 h-28 bg-gray-200 mr-4 flex items-center justify-center">
+                    <span className="text-gray-400">No image</span>
+                  </div>
+                )}
+                <div className="text-center">
                   <label htmlFor="file-input" className="cursor-pointer">
-                    <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
-                      <svg
-                        className="w-12 h-12 text-gray-400 mb-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M3 16v-1a4 4 0 014-4h1m4 0h1a4 4 0 014 4v1m-4-5l-4-4m0 0l-4 4m4-4v12"
-                        />
-                      </svg>
-                      <p className="text-gray-500 text-sm">Upload an image</p>
-                      <p className="text-gray-400 text-xs mt-1">
-                        Maximum size: 10MB
-                      </p>
-                    </div>
+                    <FaUpload className="mx-auto w-8 h-8 text-gray-400" />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Upload Maximum allowed file size is 10MB
+                    </p>
                   </label>
                   <input
                     id="file-input"
@@ -145,52 +228,30 @@ const EditProduct = () =>  {
                     className="hidden"
                   />
                 </div>
-  
-                {image && (
-                  <div className="mt-4">
-                    <img
-                      src={image}
-                      alt="Category"
-                      className="w-24 h-24 object-cover rounded border border-gray-300"
-                    />
-                  </div>
-                )}
               </div>
             </div>
-  
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status
-              </label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-  
-            <div className="flex justify-end mt-8 space-x-4">
-              <button
-                type="button"
-                onClick={() => navigate("/category")}
-                className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-purple-700 text-white rounded-full"
-              >
-                Save
-              </button>
-            </div>
           </div>
-        </form>
-        <ToastContainer />
-      </>
-    );
-  };
-export default EditProduct
+        </div>
+
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={() => navigate("/products")}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-purple-700 text-white rounded-md"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+      <ToastContainer />
+    </div>
+  );
+};
+
+export default EditProduct;
