@@ -14,6 +14,7 @@ import SubCategoryGrid from "./Component/Subcategory/SubCategoryGrid.jsx";
 import Editsubcategory from "./Component/Subcategory/Editsubcategory.jsx";
 import Addsubcategory from "./Component/Subcategory/Addsubcategory.jsx";
 import AddProduct from "./Component/Products/AddProduct.jsx";
+import EditProduct from "./Component/Products/EditProduct.jsx";
 
 const AppRouter = createBrowserRouter([
   {
@@ -65,8 +66,12 @@ const AppRouter = createBrowserRouter([
         element:<Editsubcategory/>
       },
       {
-        path:"addproduct",
+        path:"/addproduct",
         element : <AddProduct/>
+      },
+      {
+        path : "/editproduct/:id",
+        element : <EditProduct/>
       },
       {
         path: "/", // Catch-all route for undefined paths
