@@ -34,7 +34,6 @@ const createProduct = async (req, res) => {
 
 // Get products with optional filters for category and subcategory
 const getProducts = async (req, res) => {
-  console.log("getProducts endpoint hit");
   try {
     const { categoryId, subcategoryId } = req.query;
 

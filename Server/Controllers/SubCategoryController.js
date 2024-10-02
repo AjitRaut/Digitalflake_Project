@@ -11,7 +11,7 @@ exports.addSubcategory = async (req, res) => {
     const newSubcategory = new Subcategory({
       subcatname, // Update here
       category: categoryId, // Link the subcategory to a category
-      image: req.file ? req.file.path : null, // Save the image file path
+      image: req.file ? req.file : null, // Save the image file path
     });
 
     // Save the subcategory in the database

@@ -3,18 +3,32 @@ const Counter = require("../Models/counter");
 const path = require("path");
 const mongoose = require("mongoose");
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
 const addCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    let { name } = req.body;
+
+    // Check if the category already exists
+    name = capitalizeFirstLetter(name.trim());
+
+    // Check if the category already exists (case insensitive)
+    const existingCategory = await Category.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } });
+    if (existingCategory) {
+      return res.status(400).json({ message: "Category already exists." });
+    }
+
+
     if (!req.file) {
-      return res
-        .status(400)
-        .json({ message: "File upload failed. Please provide an image." });
+      return res.status(400).json({ message: "File upload failed. Please provide an image." });
     }
 
     // Adjust the image path to be a valid URL
     const image = `${req.file.path}`;
-  console.log(image)
+    console.log(image);
+
     // Increment the counter
     const counter = await Counter.findOneAndUpdate(
       {},
@@ -27,19 +41,18 @@ const addCategory = async (req, res) => {
     const newCategory = new Category({
       id: newCategoryId,
       name,
-      image : `http://localhost:5000/uploads/${req.file.filename}`,
+      image: `http://localhost:5000/uploads/${req.file.filename}`,
       status: "inactive",
     });
     await newCategory.save();
 
-    res
-      .status(201)
-      .json({ message: "Category added successfully!", category: newCategory });
+    res.status(201).json({ message: "Category added successfully!", category: newCategory });
   } catch (error) {
     console.error("Error adding category:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 const getCategories = async (req, res) => {
   try {
