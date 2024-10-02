@@ -29,6 +29,13 @@ const AddCategory = () => {
         body: formData,
       });
 
+      // Check for specific response messages
+      if (response.status === 400) {
+        const errorData = await response.json();
+        toast.error(errorData.message); // Show error for existing category
+        return;
+      }
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -44,7 +51,7 @@ const AddCategory = () => {
       setImageFile(null);
     } catch (error) {
       console.error("Error adding category:", error);
-      // Show error notification
+      // Show general error notification
       toast.error("Error adding category. Please try again.");
     }
   };
@@ -123,12 +130,12 @@ const AddCategory = () => {
           {/* Buttons */}
           <div className="flex justify-end mt-8 space-x-4">
             <Link to={"/category"}>
-            <button
-              type="button"
-              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
-            >
-              Cancel
-            </button>
+              <button
+                type="button"
+                className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
+              >
+                Cancel
+              </button>
             </Link>
           
             <button
