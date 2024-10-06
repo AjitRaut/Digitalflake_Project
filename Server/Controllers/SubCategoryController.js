@@ -1,6 +1,8 @@
 const Subcategory = require('../Models/Subcategory');
 const Counter = require('../Models/counter'); // Assuming you have a counter model
 const path = require('path');
+const mongoose = require("mongoose");
+
 
 // Utility function to capitalize the first letter
 const capitalizeFirstLetter = (string) => {
@@ -63,7 +65,7 @@ exports.getSubCategoryById = async (req, res) => {
   try {
     const id = req.params.id;
     const subcategory = await Subcategory.findOne({ _id: id });
-    console.log("subcatid", id);
+    
     return res.status(200).json(subcategory);
   } catch (error) {
     console.error(error);
@@ -72,15 +74,14 @@ exports.getSubCategoryById = async (req, res) => {
 };
 exports.updateSubCategory = async (req, res) => {
   try {
-    const { name, status } = req.body;
+    const { subcatname, status } = req.body;  // Adjusted here
     const SubcategoryId = req.params.id;
-    console.log(SubcategoryId);
 
     if (!mongoose.Types.ObjectId.isValid(SubcategoryId)) {
       return res.status(400).json({ message: "Invalid subcategory ID" });
     }
 
-    let updateData = { subcatname: name, status };
+    let updateData = { subcatname, status };
 
     if (req.file) {
       const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
@@ -106,6 +107,7 @@ exports.updateSubCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Controller for deleting a subcategory
 exports.deleteSubcategory = async (req, res) => {
