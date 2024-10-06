@@ -59,6 +59,54 @@ exports.getSubcategories = async (req, res) => {
   }
 };
 
+exports.getSubCategoryById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const subcategory = await Subcategory.findOne({ _id: id });
+    console.log("subcatid", id);
+    return res.status(200).json(subcategory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+exports.updateSubCategory = async (req, res) => {
+  try {
+    const { name, status } = req.body;
+    const SubcategoryId = req.params.id;
+    console.log(SubcategoryId);
+
+    if (!mongoose.Types.ObjectId.isValid(SubcategoryId)) {
+      return res.status(400).json({ message: "Invalid subcategory ID" });
+    }
+
+    let updateData = { subcatname: name, status };
+
+    if (req.file) {
+      const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
+      updateData.image = imagePath;
+    }
+
+    const updatedSubcategory = await Subcategory.findByIdAndUpdate(
+      SubcategoryId,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedSubcategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+
+    res.json({
+      message: "Subcategory updated successfully!",
+      subcategory: updatedSubcategory,
+    });
+  } catch (error) {
+    console.error("Error updating subcategory:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Controller for deleting a subcategory
 exports.deleteSubcategory = async (req, res) => {
   try {
