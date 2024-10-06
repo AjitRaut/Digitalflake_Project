@@ -79,7 +79,7 @@ const ProductGrid = () => {
       },
       {
         Header: "Status",
-        accessor: "categoryId.status",
+        accessor: "status",
         Cell: ({ value }) => {
           console.log(value); // Log the status value
           return ( // Ensure you return the JSX element

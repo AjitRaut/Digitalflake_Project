@@ -3,16 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronDown, FaUpload } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [productName, setProductName] = useState("");
-  const [subcategory, setSubcategory] = useState("");
-  const [category, setCategory] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState(""); // Change to ID
+  const [categoryId, setCategoryId] = useState(""); // Change to ID
   const [status, setStatus] = useState("active");
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]); // Assuming you have subcategories
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -24,11 +27,9 @@ const EditProduct = () => {
           throw new Error("Failed to fetch product");
         }
         const data = await response.json();
-        console.log(data);
         setProductName(data.name);
-        setSubcategory(data.subcategoryId.subcatname
-        );
-        setCategory(data.categoryId.name);
+        setSubcategoryId(data.subcategoryId._id); // Set the subcategory ID
+        setCategoryId(data.categoryId._id); // Set the category ID
         setStatus(data.categoryId.status);
         setImage(data.categoryId.image);
       } catch (error) {
@@ -37,21 +38,33 @@ const EditProduct = () => {
       }
     };
 
-    fetchProduct();
-  }, [id]);
-
-  useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/categories');
+        const response = await axios.get(
+          "http://localhost:5000/api/categories"
+        );
         setCategories(response.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
+    const fetchSubcategories = async () => {
+      try {
+        // Adjust the API endpoint based on your structure
+        const response = await axios.get(
+          `http://localhost:5000/api/subcategories`
+        );
+        setSubcategories(response.data);
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      }
+    };
+
+    fetchProduct();
     fetchCategories();
-  }, []);
+    fetchSubcategories();
+  }, [id]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -64,7 +77,6 @@ const EditProduct = () => {
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        // 10MB limit
         toast.error("File size exceeds 10MB. Please upload a smaller image.");
         return;
       }
@@ -83,8 +95,8 @@ const EditProduct = () => {
 
     const formData = new FormData();
     formData.append("name", productName);
-    formData.append("subcategory", subcategory);
-    formData.append("category", category);
+    formData.append("subcategoryId", subcategoryId); // Use subcategory ID
+    formData.append("categoryId", categoryId); // Use category ID
     formData.append("status", status);
     if (imageFile) {
       formData.append("image", imageFile);
@@ -102,11 +114,9 @@ const EditProduct = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       toast.success("Product updated successfully!");
       navigate("/products");
     } catch (error) {
-      console.error("Error updating product:", error);
       toast.error(error.message || "Error updating product. Please try again.");
     }
   };
@@ -143,14 +153,23 @@ const EditProduct = () => {
             >
               Subcategory
             </label>
-            <input
-              type="text"
-              id="subcategory"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={subcategory}
-              onChange={(e) => setSubcategory(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <select
+                id="subcategory"
+                className="w-full p-2 border border-gray-300 rounded-md appearance-none"
+                value={subcategoryId} // Use the ID here
+                onChange={(e) => setSubcategoryId(e.target.value)} // Update the state with ID
+                required
+              >
+                <option value="">Select subcategory</option>
+                {subcategories.map((subcat) => (
+                  <option key={subcat._id} value={subcat._id}>
+                    {subcat.subcatname}
+                  </option>
+                ))}
+              </select>
+              <FaChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
           </div>
           <div>
             <label
@@ -163,12 +182,16 @@ const EditProduct = () => {
               <select
                 id="category"
                 className="w-full p-2 border border-gray-300 rounded-md appearance-none"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                value={categoryId} // Use the ID here
+                onChange={(e) => setCategoryId(e.target.value)} // Update the state with ID
                 required
               >
                 <option value="">Select category</option>
-                {/* Add your category options here */}
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
               </select>
               <FaChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             </div>
