@@ -63,20 +63,21 @@ const updateProduct = async (req, res) => {
     const updateData = { name, subcategoryId, categoryId, status };
 
     if (req.file) {
-      updateData.image = req.file.path;
+      updateData.image = req.file.path; // Save the new image if uploaded
     }
 
-    const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true }).populate('categoryId subcategoryId');
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    res.json(product);
+    res.json(product); // Return the updated product with populated fields
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 const deleteProduct = async (req, res) => {
   try {

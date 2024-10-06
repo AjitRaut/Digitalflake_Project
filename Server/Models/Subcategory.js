@@ -1,4 +1,3 @@
-// models/Subcategory.js
 const mongoose = require("mongoose");
 
 const subcategorySchema = new mongoose.Schema({
@@ -11,7 +10,21 @@ const subcategorySchema = new mongoose.Schema({
     ref: "Category",
     required: true,
   },
-  image: { type: String, required: true },
+  categoryName: {
+    type: String,
+    required: false, // Make this required if you want to enforce it
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["active", "inactive"], // Restricting to specific values
+    default: "active", // Default value
+  },
+}, {
+  timestamps: true, // Automatically create createdAt and updatedAt fields
 });
 
 const Subcategory = mongoose.model("Subcategory", subcategorySchema);

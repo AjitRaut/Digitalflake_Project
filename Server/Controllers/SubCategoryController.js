@@ -72,24 +72,25 @@ exports.getSubCategoryById = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 exports.updateSubCategory = async (req, res) => {
   try {
-    const { subcatname, status } = req.body;  // Adjusted here
-    const SubcategoryId = req.params.id;
+    const { subcatname, status, categoryName } = req.body; // Include categoryId
+    const subcategoryId = req.params.id;
 
-    if (!mongoose.Types.ObjectId.isValid(SubcategoryId)) {
+    if (!mongoose.Types.ObjectId.isValid(subcategoryId)) {
       return res.status(400).json({ message: "Invalid subcategory ID" });
     }
 
-    let updateData = { subcatname, status };
+    let updateData = { subcatname, status,categoryName }; // Add category to updateData
 
     if (req.file) {
       const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
-      updateData.image = imagePath;
+      updateData.image = imagePath; // Handle image upload
     }
 
     const updatedSubcategory = await Subcategory.findByIdAndUpdate(
-      SubcategoryId,
+      subcategoryId,
       updateData,
       { new: true }
     );
@@ -107,7 +108,6 @@ exports.updateSubCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 // Controller for deleting a subcategory
 exports.deleteSubcategory = async (req, res) => {
