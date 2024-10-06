@@ -73,7 +73,7 @@ const EditSubcategory = () => {
     const formData = new FormData();
     formData.append("name", subcategoryName);
     formData.append("status", status);
-    formData.append("categoryId", category); // Ensure category is included
+    formData.append("categoryName", category); // Ensure category is included
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -122,7 +122,7 @@ const EditSubcategory = () => {
                 >
                   <option value="">Select a Category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                    <option key={cat._id} value={cat.name}>
                       {cat.name}
                     </option>
                   ))}

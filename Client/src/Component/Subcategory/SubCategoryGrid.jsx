@@ -37,17 +37,26 @@ const SubcategoryGrid = () => {
   };
   console.log(subcategories)
 
-  const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat._id === categoryId);
-    return category ? category.name : "Phone"; // Default to "Unknown" if not found
-  };
+ 
 
   const filteredSubcategories = useMemo(() => {
     return subcategories.filter((subcategory) =>
-      subcategory.subcatname && 
+      subcategory.subcatname &&
       subcategory.subcatname.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [subcategories, searchTerm]);
+  
+  const getCategoryName = (subcategory) => {
+    return subcategory.categoryName || "Unknown"; // Access the category name directly
+  };
+  
+  const data = useMemo(() => {
+    return filteredSubcategories.map((subcategory) => ({
+      ...subcategory,
+      categoryName: getCategoryName(subcategory), // Directly use the category name from the subcategory
+    }));
+  }, [filteredSubcategories]);
+  
 
   const handleDelete = (id) => {
     setDeleteId(id);
@@ -68,12 +77,7 @@ const SubcategoryGrid = () => {
     }
   };
 
-  const data = useMemo(() => {
-    return filteredSubcategories.map((subcategory) => ({
-      ...subcategory,
-      categoryName: getCategoryName(subcategory.categoryId), // Get the category name using the helper function
-    }));
-  }, [filteredSubcategories, categories]);
+ 
 
   const columns = useMemo(
     () => [
@@ -87,7 +91,7 @@ const SubcategoryGrid = () => {
       },
       {
         Header: "Category Name",
-        accessor: "category.name", // Use the new accessor
+        accessor: "categoryName", // Use the new accessor
       },
       {
         Header: "Image",
