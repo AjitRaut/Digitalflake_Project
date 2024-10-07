@@ -74,9 +74,7 @@ const getCategoryById = async (req, res) => {
     const category = await Category.findOne({ _id: id });
     
     return res.status(200).json(category);
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
+   
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

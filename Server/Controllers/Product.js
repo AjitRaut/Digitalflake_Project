@@ -7,30 +7,30 @@ const createProduct = async (req, res) => {
   try {
     const { name, categoryId, subcategoryId } = req.body;
 
-    // Ensure categoryId and subcategoryId are provided
     if (!categoryId || !subcategoryId) {
-      return res
-        .status(400)
-        .json({ message: "Category ID and Subcategory ID are required." });
+      return res.status(400).json({ message: "Category ID and Subcategory ID are required." });
     }
 
+    // Check if an image file has been uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: "File upload failed. Please provide an image." });
+    }
+
+    // Create a new product instance with image path
     const newProduct = new Product({
       name,
       categoryId,
       subcategoryId,
+      image: `http://localhost:5000/uploads/${req.file.filename}`, // Set the image URL
     });
 
     // Save the product
     await newProduct.save();
 
-    res
-      .status(201)
-      .json({ message: "Product added successfully!", product: newProduct });
+    res.status(201).json({ message: "Product added successfully!", product: newProduct });
   } catch (error) {
     console.error("Error adding product:", error);
-    res
-      .status(500)
-      .json({ message: "Error adding product.", error: error.message });
+    res.status(500).json({ message: "Error adding product.", error: error.message });
   }
 };
 
@@ -62,8 +62,10 @@ const updateProduct = async (req, res) => {
     const { name, subcategoryId, categoryId, status } = req.body;
     const updateData = { name, subcategoryId, categoryId, status };
 
+    // Check if an image file is being uploaded
     if (req.file) {
-      updateData.image = req.file.path; // Save the new image if uploaded
+      // Set the image path if a new file is uploaded
+      updateData.image = `http://localhost:5000/uploads/${req.file.filename}`; // Set the image URL
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true }).populate('categoryId subcategoryId');
@@ -74,7 +76,8 @@ const updateProduct = async (req, res) => {
 
     res.json(product); // Return the updated product with populated fields
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("Error updating product:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
