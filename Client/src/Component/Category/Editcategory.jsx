@@ -43,20 +43,23 @@ const EditCategory = () => {
         toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
         return;
       }
-  
+      
       if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast.error("File size exceeds 10MB. Please upload a smaller image.");
         return;
       }
-  
+      
       setImageFile(file);
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result);
       };
+      
       reader.readAsDataURL(file);
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,14 +150,19 @@ const EditCategory = () => {
               </div>
 
               {image && (
-                <div className="mt-4">
-                  <img
-                    src={image}
-                    alt="Category"
-                    className="w-24 h-24 object-cover rounded border border-gray-300"
-                  />
-                </div>
-              )}
+  <div className="mt-4">
+    <img
+      src={image}
+      alt="Category"
+      className="w-24 h-24 object-cover rounded border border-gray-300"
+      onError={(e) => {
+        e.target.onerror = null; // Prevents infinite loop
+        e.target.src = "path_to_placeholder_image"; // Optional placeholder
+      }}
+    />
+  </div>
+)}
+
             </div>
           </div>
 
