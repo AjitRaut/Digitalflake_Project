@@ -17,11 +17,13 @@ const EditSubcategory = () => {
   useEffect(() => {
     const fetchSubcategory = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/subcategories/${id}`);
+        const response = await fetch(
+          `http://localhost:5000/api/subcategories/${id}`
+        );
         if (!response.ok) throw new Error("Failed to fetch subcategory");
         const data = await response.json();
-        setSubcategoryName(data.name);
-        setCategory(data.categoryId); // Assuming this is the correct field from your API
+        setSubcategoryName(data.subcatname);
+        setCategory(data.categoryName); // Assuming this is the correct field from your API
         setImage(data.image);
         setStatus(data.status);
         setCategoryMongoId(data._id);
@@ -55,7 +57,8 @@ const EditSubcategory = () => {
         toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
         return;
       }
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB limit
         toast.error("File size exceeds 10MB. Please upload a smaller image.");
         return;
       }
@@ -71,7 +74,7 @@ const EditSubcategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("name", subcategoryName);
+    formData.append("subcatname", subcategoryName);
     formData.append("status", status);
     formData.append("categoryName", category); // Ensure category is included
     if (imageFile) {
@@ -79,10 +82,13 @@ const EditSubcategory = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/subcategories/${categoryMongoId}`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/subcategories/${categoryMongoId}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to update subcategory");
@@ -93,7 +99,9 @@ const EditSubcategory = () => {
       navigate("/subcategory");
     } catch (error) {
       console.error("Error updating subcategory:", error);
-      toast.error(error.message || "Error updating subcategory. Please try again.");
+      toast.error(
+        error.message || "Error updating subcategory. Please try again."
+      );
     }
   };
 
@@ -101,10 +109,15 @@ const EditSubcategory = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <form onSubmit={handleSubmit} className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white shadow overflow-hidden sm:rounded-lg p-6"
+          >
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Subcategory Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Subcategory Name
+                </label>
                 <input
                   type="text"
                   value={subcategoryName}
@@ -114,7 +127,9 @@ const EditSubcategory = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Category
+                </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -129,7 +144,9 @@ const EditSubcategory = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Status
+                </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
@@ -140,10 +157,16 @@ const EditSubcategory = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Upload Image
+                </label>
                 <div className="mt-1 flex items-center">
                   {image ? (
-                    <img src={image} alt="Subcategory" className="h-32 w-32 object-cover rounded-md" />
+                    <img
+                      src={image}
+                      alt="Subcategory"
+                      className="h-32 w-32 object-cover rounded-md"
+                    />
                   ) : (
                     <div className="h-32 w-32 border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center text-gray-400">
                       {/* Placeholder for image */}
