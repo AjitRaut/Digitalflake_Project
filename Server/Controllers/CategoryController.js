@@ -27,7 +27,6 @@ const addCategory = async (req, res) => {
 
     // Adjust the image path to be a valid URL
     const image = `${req.file.path}`;
-    console.log(image);
 
     // Increment the counter
     const counter = await Counter.findOneAndUpdate(
@@ -48,7 +47,6 @@ const addCategory = async (req, res) => {
 
     res.status(201).json({ message: "Category added successfully!", category: newCategory });
   } catch (error) {
-    console.error("Error adding category:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -66,7 +64,6 @@ const getCategories = async (req, res) => {
     }));
     res.json(formattedCategories);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -81,7 +78,6 @@ const getCategoryById = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -130,7 +126,6 @@ const updateCategory = async (req, res) => {
       category: updatedCategory,
     });
   } catch (error) {
-    console.error("Error updating category:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
