@@ -1,29 +1,34 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useTable, useSortBy, useGlobalFilter } from "react-table";
+import { useTable, useSortBy } from "react-table";
 import { BiSearch } from "react-icons/bi"; // Import a search icon
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import logo from "../../assets/digitalflakelogo.png"
+import Shimmerui from "./Shimmerui";
 
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  const fetchCategories = () => {
-    axios
-      .get("http://localhost:5000/api/categories")
-      .then((response) => setCategories(response.data))
-      .catch((error) => console.error("Error fetching categories:", error));
+  const fetchCategories = async () => {
+    setLoading(true); // Set loading to true before fetching
+    try {
+      const response = await axios.get("http://localhost:5000/api/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
   };
-  console.log(categories)
 
   // Filter categories based on the search term
   const filteredCategories = useMemo(() => {
@@ -37,22 +42,22 @@ const CategoryGrid = () => {
     setDeleteId(id);
     setShowDeleteModal(true);
   };
-  
+
   const confirmDelete = async () => {
     console.log("Deleting category with ID:", deleteId); // Log the ID being deleted
     if (deleteId) {
       try {
         await axios.delete(`http://localhost:5000/api/categories/${deleteId}`);
         // Update the state to remove the deleted category
-        setCategories(prevCategories => prevCategories.filter(category => category._id !== deleteId));
+        setCategories((prevCategories) => 
+          prevCategories.filter((category) => category._id !== deleteId)
+        );
         setShowDeleteModal(false);
       } catch (error) {
         console.error("Error deleting category:", error);
       }
     }
   };
-  
-  
 
   const data = useMemo(() => filteredCategories, [filteredCategories]);
 
@@ -106,6 +111,7 @@ const CategoryGrid = () => {
     ],
     []
   );
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -166,20 +172,26 @@ const CategoryGrid = () => {
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} className="border-b">
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} className="p-2 border">
-                      {cell.render("Cell")}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
+          {loading ? (
+            <tbody>
+              <Shimmerui /> {/* Show shimmer UI while loading */}
+            </tbody>
+          ) : (
+            <tbody {...getTableBodyProps()}>
+              {rows.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} className="border-b">
+                    {row.cells.map((cell) => (
+                      <td {...cell.getCellProps()} className="p-2 border">
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          )}
         </table>
       </div>
       {showDeleteModal && (
@@ -210,7 +222,6 @@ const CategoryGrid = () => {
         </div>
       )}
     </div>
-    
   );
 };
 
