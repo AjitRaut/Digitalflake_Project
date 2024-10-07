@@ -33,8 +33,15 @@ const AddSubcategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("subcatname", subcategoryName); // Change here to match your model
+    formData.append("subcatname", subcategoryName);
     formData.append("categoryId", selectedCategory);
+    
+    // Add categoryName based on the selected category
+    const selectedCategoryObject = categories.find(cat => cat._id === selectedCategory);
+    if (selectedCategoryObject) {
+      formData.append("categoryName", selectedCategoryObject.name);
+    }
+  
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -46,7 +53,15 @@ const AddSubcategory = () => {
       });
   
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        
+        // Check if the error message indicates that the subcategory name already exists
+        if (errorData.message === "Subcategory already exists.") {
+          toast.error("Subcategory name already exists."); // Show the specific error message
+        } else {
+          toast.error(errorData.message || "Error adding subcategory."); // Show a generic error message
+        }
+        return; // Exit the function if there's an error
       }
   
       const data = await response.json();
@@ -60,7 +75,6 @@ const AddSubcategory = () => {
     }
   };
   
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
