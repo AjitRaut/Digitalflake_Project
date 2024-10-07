@@ -36,7 +36,6 @@ exports.addSubcategory = async (req, res) => {
     );
 
     const newSubcategoryId = counter.subcategorySeq;
-    console.log(newSubcategoryId);
 
     // Create a new subcategory with the category name included
     const newSubcategory = new Subcategory({
@@ -51,7 +50,6 @@ exports.addSubcategory = async (req, res) => {
 
     res.status(201).json({ message: "Subcategory added successfully!", subcategory: newSubcategory });
   } catch (error) {
-    console.error('Error creating subcategory:', error);
     res.status(500).json({ error: 'Failed to create subcategory' });
   }
 };
@@ -63,7 +61,6 @@ exports.getSubcategories = async (req, res) => {
     const subcategories = await Subcategory.find().populate('category', 'name');
     res.status(200).json(subcategories);
   } catch (error) {
-    console.error('Error fetching subcategories:', error);
     res.status(500).json({ error: 'Failed to fetch subcategories' });
   }
 };
@@ -75,7 +72,6 @@ exports.getSubCategoryById = async (req, res) => {
     
     return res.status(200).json(subcategory);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -124,7 +120,6 @@ exports.updateSubCategory = async (req, res) => {
       subcategory: updatedSubcategory,
     });
   } catch (error) {
-    console.error("Error updating subcategory:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -142,7 +137,6 @@ exports.deleteSubcategory = async (req, res) => {
 
     res.status(200).json({ message: 'Subcategory deleted successfully' });
   } catch (error) {
-    console.error('Error deleting subcategory:', error);
     res.status(500).json({ error: 'Failed to delete subcategory' });
   }
 };
