@@ -80,7 +80,7 @@ const ProductGrid = () => {
       },
       {
         Header: "Image",
-        accessor: "categoryId.image",
+        accessor: "image",
         Cell: ({ value }) => (
           <img src={value} alt="Product" className="w-10 h-10 object-cover" />
         ),

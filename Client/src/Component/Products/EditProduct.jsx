@@ -20,9 +20,7 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/products/${id}`
-        );
+        const response = await fetch(`http://localhost:5000/api/products/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch product");
         }
@@ -30,8 +28,8 @@ const EditProduct = () => {
         setProductName(data.name);
         setSubcategoryId(data.subcategoryId._id); // Set the subcategory ID
         setCategoryId(data.categoryId._id); // Set the category ID
-        setStatus(data.categoryId.status);
-        setImage(data.categoryId.image);
+        setStatus(data.status);
+        setImage(data.image); // Use the product image
       } catch (error) {
         console.error("Error fetching product:", error);
         toast.error("Error fetching product details");
@@ -40,9 +38,7 @@ const EditProduct = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/categories"
-        );
+        const response = await axios.get("http://localhost:5000/api/categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -52,9 +48,7 @@ const EditProduct = () => {
     const fetchSubcategories = async () => {
       try {
         // Adjust the API endpoint based on your structure
-        const response = await axios.get(
-          `http://localhost:5000/api/subcategories`
-        );
+        const response = await axios.get(`http://localhost:5000/api/subcategories`);
         setSubcategories(response.data);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
@@ -81,10 +75,10 @@ const EditProduct = () => {
         return;
       }
 
-      setImageFile(file);
+      setImageFile(file); // Set the new image file
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        setImage(reader.result); // Update the image preview
       };
       reader.readAsDataURL(file);
     }
@@ -99,7 +93,7 @@ const EditProduct = () => {
     formData.append("categoryId", categoryId); // Use category ID
     formData.append("status", status);
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append("image", imageFile); // Append the new image if it exists
     }
 
     try {
