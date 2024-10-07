@@ -90,33 +90,42 @@ const updateCategory = async (req, res) => {
   try {
     const { name, status } = req.body;
     const categoryId = req.params.id;
-    console.log(categoryId);
 
+    // Check for valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
       return res.status(400).json({ message: "Invalid category ID" });
     }
 
-    let updateData = { name, status };
+    // Prepare the update data
+    let updateData = {};
 
-    if (req.file) {
-      const imagePath = path.join("uploads", req.file.filename);
-      updateData.image = `/${imagePath.replace(
-        /\\/g,
-        "/"
-      )}`;
+    // Ensure the name and status are present before updating
+    if (name) {
+      updateData.name = capitalizeFirstLetter(name.trim()); // Capitalize and trim the name
+    }
+    if (status) {
+      updateData.status = status; // Update status
     }
 
+    // Check if an image file is being uploaded
+    if (req.file) {
+      // Set the image path if a new file is uploaded
+      updateData.image = `http://localhost:5000/uploads/${req.file.filename}`;
+    }
+
+    // Perform the update operation
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
-      updateData,
-      { new: true }
+      { $set: updateData }, // Use $set to update only the provided fields
+      { new: true, runValidators: true } // Return the updated document and validate
     );
 
+    // Check if the category was found and updated
     if (!updatedCategory) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    res.json({
+    res.status(200).json({
       message: "Category updated successfully!",
       category: updatedCategory,
     });
@@ -125,6 +134,7 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 const deleteCategory = async (req, res) => {
   try {
