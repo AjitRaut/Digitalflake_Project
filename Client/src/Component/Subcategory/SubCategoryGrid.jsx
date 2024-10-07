@@ -5,11 +5,13 @@ import { useTable, useSortBy } from "react-table";
 import { BiSearch } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import ShimmerUI from "./Shimmerui";
 
 const SubcategoryGrid = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); // State to track loading status
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -29,34 +31,35 @@ const SubcategoryGrid = () => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/subcategories");
+      const response = await axios.get(
+        "http://localhost:5000/api/subcategories"
+      );
       setSubcategories(response.data);
+      setLoading(false); // Set loading to false once data is fetched
     } catch (error) {
       console.error("Error fetching subcategories:", error);
+      setLoading(false); // Set loading to false even if there is an error
     }
   };
-  console.log(subcategories)
-
- 
 
   const filteredSubcategories = useMemo(() => {
-    return subcategories.filter((subcategory) =>
-      subcategory.subcatname &&
-      subcategory.subcatname.toLowerCase().includes(searchTerm.toLowerCase())
+    return subcategories.filter(
+      (subcategory) =>
+        subcategory.subcatname &&
+        subcategory.subcatname.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [subcategories, searchTerm]);
-  
+
   const getCategoryName = (subcategory) => {
-    return subcategory.categoryName || "Unknown"; // Access the category name directly
+    return subcategory.categoryName || "Unknown";
   };
-  
+
   const data = useMemo(() => {
     return filteredSubcategories.map((subcategory) => ({
       ...subcategory,
-      categoryName: getCategoryName(subcategory), // Directly use the category name from the subcategory
+      categoryName: getCategoryName(subcategory),
     }));
   }, [filteredSubcategories]);
-  
 
   const handleDelete = (id) => {
     setDeleteId(id);
@@ -66,9 +69,13 @@ const SubcategoryGrid = () => {
   const confirmDelete = async () => {
     if (deleteId) {
       try {
-        await axios.delete(`http://localhost:5000/api/subcategories/${deleteId}`);
+        await axios.delete(
+          `http://localhost:5000/api/subcategories/${deleteId}`
+        );
         setSubcategories((prevSubcategories) =>
-          prevSubcategories.filter((subcategory) => subcategory._id !== deleteId)
+          prevSubcategories.filter(
+            (subcategory) => subcategory._id !== deleteId
+          )
         );
         setShowDeleteModal(false);
       } catch (error) {
@@ -77,13 +84,12 @@ const SubcategoryGrid = () => {
     }
   };
 
- 
-
   const columns = useMemo(
     () => [
       {
         Header: "ID",
         accessor: "_id",
+        Cell: ({ row }) => row.index + 1,
       },
       {
         Header: "Subcategory Name",
@@ -91,7 +97,7 @@ const SubcategoryGrid = () => {
       },
       {
         Header: "Category Name",
-        accessor: "categoryName", // Use the new accessor
+        accessor: "categoryName",
       },
       {
         Header: "Image",
@@ -104,7 +110,9 @@ const SubcategoryGrid = () => {
         Header: "Status",
         accessor: "status",
         Cell: ({ value }) => (
-          <span className={value === "active" ? "text-green-500" : "text-red-500"}>
+          <span
+            className={value === "active" ? "text-green-500" : "text-red-500"}
+          >
             {value === "active" ? "Active" : "Inactive"}
           </span>
         ),
@@ -164,12 +172,21 @@ const SubcategoryGrid = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200" {...getTableProps()}>
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          {...getTableProps()}
+        >
           <thead>
             {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()} className="bg-yellow-100">
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-yellow-100"
+              >
                 {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())} className="p-2 border">
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="p-2 border"
+                  >
                     {column.render("Header")}
                     <span>
                       {column.isSorted
@@ -184,23 +201,26 @@ const SubcategoryGrid = () => {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} className="border-b">
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} className="p-2 border">
-                      {cell.render("Cell")}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
+            {loading ? (
+              <ShimmerUI /> // Display the ShimmerUI while loading
+            ) : (
+              rows.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} className="border-b">
+                    {row.cells.map((cell) => (
+                      <td {...cell.getCellProps()} className="p-2 border">
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
           <div className="bg-white p-5 rounded-lg shadow-xl">
