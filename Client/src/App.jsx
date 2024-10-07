@@ -23,7 +23,7 @@ const MainContent = () => {
     <div className="container flex">
       {isLoggedIn && <Sidebar />} {/* Show Sidebar only if logged in */}
       <div className="ml-64 mt-16 flex-grow">
-        <Outlet /> {/* Render child routes here */}
+        <Outlet />
       </div>
     </div>
   );
@@ -32,10 +32,8 @@ const MainContent = () => {
 function App() {
   return (
     <Provider store={store}>
-      {" "}
-      {/* Wrap the app with Redux Provider */}
-      <Navbar /> {/* Always show the Navbar */}
-      <MainContent /> {/* Render MainContent, which includes Outlet */}
+      <Navbar />
+      <MainContent />
     </Provider>
   );
 }
