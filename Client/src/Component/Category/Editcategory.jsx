@@ -4,18 +4,16 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const EditCategory = () => {
-  const { id } = useParams(); // This will be the numeric id
+  const { id } = useParams();
   const navigate = useNavigate();
   const [categoryName, setCategoryName] = useState("");
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [status, setStatus] = useState("inactive");
-  const [categoryMongoId, setCategoryMongoId] = useState(null);
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        // Use the numeric id to fetch the category
         const response = await fetch(`http://localhost:5000/api/categories/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch category");
@@ -24,7 +22,6 @@ const EditCategory = () => {
         setCategoryName(data.name);
         setImage(data.image);
         setStatus(data.status);
-        setCategoryMongoId(data._id); // Store the MongoDB _id
       } catch (error) {
         console.error("Error fetching category:", error);
         toast.error("Error fetching category details");
@@ -36,30 +33,31 @@ const EditCategory = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+
+    // Validate image type
+    const validTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (file && !validTypes.includes(file.type)) {
+      toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
+      return;
+    }
+
+    // Validate image size
+    if (file && file.size > 10 * 1024 * 1024) { // 10MB limit
+      toast.error("File size exceeds 10MB. Please upload a smaller image.");
+      return;
+    }
+
+    setImageFile(file);
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result); // Set image preview
+    };
     
     if (file) {
-      const validTypes = ["image/jpeg", "image/png", "image/gif"];
-      if (!validTypes.includes(file.type)) {
-        toast.error("Please upload a valid image (JPEG, PNG, or GIF).");
-        return;
-      }
-      
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        toast.error("File size exceeds 10MB. Please upload a smaller image.");
-        return;
-      }
-      
-      setImageFile(file);
-      
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      
       reader.readAsDataURL(file);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,8 +70,7 @@ const EditCategory = () => {
     }
 
     try {
-      // Use the MongoDB _id for the update operation
-      const response = await fetch(`http://localhost:5000/api/categories/${categoryMongoId}`, {
+      const response = await fetch(`http://localhost:5000/api/categories/${id}`, {
         method: "PUT",
         body: formData,
       });
@@ -83,8 +80,6 @@ const EditCategory = () => {
         throw new Error(errorData.message || "Failed to update category");
       }
 
-      const data = await response.json();
-      console.log(data);
       toast.success("Category updated successfully!");
       navigate("/category");
     } catch (error) {
@@ -150,19 +145,18 @@ const EditCategory = () => {
               </div>
 
               {image && (
-  <div className="mt-4">
-    <img
-      src={image}
-      alt="Category"
-      className="w-24 h-24 object-cover rounded border border-gray-300"
-      onError={(e) => {
-        e.target.onerror = null; // Prevents infinite loop
-        e.target.src = "path_to_placeholder_image"; // Optional placeholder
-      }}
-    />
-  </div>
-)}
-
+                <div className="mt-4">
+                  <img
+                    src={image}
+                    alt="Category"
+                    className="w-24 h-24 object-cover rounded border border-gray-300"
+                    onError={(e) => {
+                      e.target.onerror = null; // Prevents infinite loop
+                      e.target.src = "path_to_placeholder_image"; // Optional placeholder
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
