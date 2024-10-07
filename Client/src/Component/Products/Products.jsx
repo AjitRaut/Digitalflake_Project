@@ -1,14 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useTable, useSortBy, useGlobalFilter } from "react-table";
+import { useTable, useSortBy } from "react-table";
 import { BiSearch } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import ShimmerUI from "./Shimmerui"
 
 const ProductGrid = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); // Track loading state
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -19,10 +21,15 @@ const ProductGrid = () => {
   const fetchProducts = () => {
     axios
       .get("http://localhost:5000/api/products")
-      .then((response) => setProducts(response.data))
-      .catch((error) => console.error("Error fetching products:", error));
+      .then((response) => {
+        setProducts(response.data);
+        setLoading(false); // Set loading to false once data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+        setLoading(false); // Set loading to false even if there is an error
+      });
   };
-  console.log("Products",products)
 
   // Filter products based on the search term
   const filteredProducts = useMemo(() => {
@@ -57,6 +64,7 @@ const ProductGrid = () => {
       {
         Header: "Id",
         accessor: "_id",
+        Cell: ({ row }) => row.index + 1,
       },
       {
         Header: "Product Name",
@@ -67,35 +75,34 @@ const ProductGrid = () => {
         accessor: "categoryId.name",
       },
       {
-        Header: "Subcategory", // New subcategory column
+        Header: "Subcategory",
         accessor: "subcategoryId.subcatname",
       },
       {
         Header: "Image",
         accessor: "categoryId.image",
         Cell: ({ value }) => (
-          <img src={value} alt="Product" className="w-10 h-10" />
+          <img src={value} alt="Product" className="w-10 h-10 object-cover" />
         ),
       },
       {
         Header: "Status",
         accessor: "status",
-        Cell: ({ value }) => {
-          console.log(value); // Log the status value
-          return ( // Ensure you return the JSX element
-            <span className={value === "active" ? "text-green-500" : "text-red-500"}>
-              {value === "active" ? "Active" : "Inactive"}
-            </span>
-          );
-        },
+        Cell: ({ value }) => (
+          <span
+            className={value === "active" ? "text-green-500" : "text-red-500"}
+          >
+            {value === "active" ? "Active" : "Inactive"}
+          </span>
+        ),
       },
       {
         Header: "Action",
         accessor: "action",
         Cell: ({ row }) => (
-          <div>
+          <div className="flex items-center space-x-2">
             <Link to={`/editproduct/${row.original._id}`}>
-              <button className="mr-2 text-gray-500">
+              <button className="text-gray-500">
                 <FiEdit />
               </button>
             </Link>
@@ -123,20 +130,20 @@ const ProductGrid = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0">
         <h1 className="text-xl font-bold">Product</h1>
-        <div className="flex items-center">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <div className="relative w-full sm:w-auto">
             <BiSearch className="absolute left-3 top-2 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full sm:w-64 border p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
           <Link to="/addproduct">
-            <button className="bg-purple-700 text-white px-4 py-2 rounded ml-4">
+            <button className="w-full sm:w-auto bg-purple-700 text-white px-4 py-2 rounded">
               Add New
             </button>
           </Link>
@@ -144,54 +151,50 @@ const ProductGrid = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table
-          className="min-w-full bg-white border border-gray-200"
-          {...getTableProps()}
-        >
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr
-                {...headerGroup.getHeaderGroupProps()}
-                className="bg-yellow-100"
-              >
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="p-2 border"
-                  >
-                    {column.render("Header")}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} className="border-b">
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} className="p-2 border">
-                      {cell.render("Cell")}
-                    </td>
+        
+          <table className="min-w-full bg-white border border-gray-200" {...getTableProps()}>
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()} className="bg-yellow-100">
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className="p-2 border text-left sm:text-center"
+                    >
+                      {column.render("Header")}
+                      <span>
+                        {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
+                      </span>
+                    </th>
                   ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </thead>
+            {loading ? (
+          <ShimmerUI /> // Use ShimmerUI when data is loading
+        ) : (
+            <tbody {...getTableBodyProps()}>
+              {rows.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} className="border-b">
+                    {row.cells.map((cell) => (
+                      <td {...cell.getCellProps()} className="p-2 border text-left sm:text-center">
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+        )}
+          </table>
+        
       </div>
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-          <div className="bg-white p-5 rounded-lg shadow-xl">
+          <div className="bg-white p-5 rounded-lg shadow-xl w-11/12 sm:w-96">
             <div className="flex items-center mb-4">
               <svg
                 className="w-6 h-6 text-red-500 mr-2"
