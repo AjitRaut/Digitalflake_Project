@@ -10,45 +10,52 @@ const capitalizeFirstLetter = (string) => {
 };
 
 // Controller for adding a new subcategory
-exports.addSubcategory = async (req, res) =>{ try {
-  let { subcatname, categoryId } = req.body;
+exports.addSubcategory = async (req, res) => {
+  try {
+    let { subcatname, categoryId, categoryName } = req.body;
 
-  subcatname = capitalizeFirstLetter(subcatname.trim());
+    // Capitalize the first letter of the subcategory name
+    subcatname = capitalizeFirstLetter(subcatname.trim());
 
-  const existingSubcategory = await Subcategory.findOne({ subcatname: { $regex: new RegExp(`^${subcatname}$`, 'i') } });
-  if (existingSubcategory) {
-    return res.status(400).json({ message: "Subcategory already exists." });
+    // Check for existing subcategory
+    const existingSubcategory = await Subcategory.findOne({ subcatname: { $regex: new RegExp(`^${subcatname}$`, 'i') } });
+    if (existingSubcategory) {
+      return res.status(400).json({ message: "Subcategory already exists." });
+    }
+
+    // Check for file upload
+    if (!req.file) {
+      return res.status(400).json({ message: "File upload failed. Please provide an image." });
+    }
+
+    // Increment the counter for subcategories
+    const counter = await Counter.findOneAndUpdate(
+      {},
+      { $inc: { subcategorySeq: 1 } },
+      { new: true, upsert: true }
+    );
+
+    const newSubcategoryId = counter.subcategorySeq;
+    console.log(newSubcategoryId);
+
+    // Create a new subcategory with the category name included
+    const newSubcategory = new Subcategory({
+      id: newSubcategoryId,
+      subcatname,
+      category: categoryId,
+      categoryName, // Use categoryName from the request body
+      image: `http://localhost:5000/uploads/${req.file.filename}`,
+    });
+
+    await newSubcategory.save();
+
+    res.status(201).json({ message: "Subcategory added successfully!", subcategory: newSubcategory });
+  } catch (error) {
+    console.error('Error creating subcategory:', error);
+    res.status(500).json({ error: 'Failed to create subcategory' });
   }
-
-  if (!req.file) {
-    return res.status(400).json({ message: "File upload failed. Please provide an image." });
-  }
-
-  // Increment the counter for subcategories
-  const counter = await Counter.findOneAndUpdate(
-    {},
-    { $inc: { subcategorySeq: 1 } },
-    { new: true, upsert: true }
-  );
-
-  const newSubcategoryId = counter.subcategorySeq;
-  console.log(newSubcategoryId)
-
-  const newSubcategory = new Subcategory({
-    id: newSubcategoryId,
-    subcatname,
-    category: categoryId,
-    image: `http://localhost:5000/uploads/${req.file.filename}`,
-  });
-
-  await newSubcategory.save();
-
-  res.status(201).json({ message: "Subcategory added successfully!", subcategory: newSubcategory });
-} catch (error) {
-  console.error('Error creating subcategory:', error);
-  res.status(500).json({ error: 'Failed to create subcategory' });
-}
 };
+
 
 // Controller for fetching all subcategories
 exports.getSubcategories = async (req, res) => {
@@ -75,20 +82,33 @@ exports.getSubCategoryById = async (req, res) => {
 
 exports.updateSubCategory = async (req, res) => {
   try {
-    const { subcatname, status, categoryName } = req.body; // Include categoryId
+    const { subcatname, status, categoryName } = req.body;
     const subcategoryId = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(subcategoryId)) {
       return res.status(400).json({ message: "Invalid subcategory ID" });
     }
 
-    let updateData = { subcatname, status,categoryName }; // Add category to updateData
+    // Check if subcategory name already exists (excluding current subcategory)
+    const existingSubcategory = await Subcategory.findOne({
+      subcatname: subcatname,
+      _id: { $ne: subcategoryId }, // Exclude the current subcategory from check
+    });
 
-    if (req.file) {
-      const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
-      updateData.image = imagePath; // Handle image upload
+    if (existingSubcategory) {
+      return res.status(400).json({ message: "Subcategory name already exists" });
     }
 
+    // Prepare update data
+    let updateData = { subcatname, status, categoryName };
+
+    // Handle image upload if provided
+    if (req.file) {
+      const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
+      updateData.image = imagePath;
+    }
+
+    // Update the subcategory in the database
     const updatedSubcategory = await Subcategory.findByIdAndUpdate(
       subcategoryId,
       updateData,
