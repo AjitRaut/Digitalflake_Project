@@ -1,8 +1,7 @@
-const Subcategory = require('../Models/Subcategory');
-const Counter = require('../Models/counter'); // Assuming you have a counter model
-const path = require('path');
+const Subcategory = require("../Models/Subcategory");
+const Counter = require("../Models/counter"); // Assuming you have a counter model
+const path = require("path");
 const mongoose = require("mongoose");
-
 
 // Utility function to capitalize the first letter
 const capitalizeFirstLetter = (string) => {
@@ -18,14 +17,18 @@ exports.addSubcategory = async (req, res) => {
     subcatname = capitalizeFirstLetter(subcatname.trim());
 
     // Check for existing subcategory
-    const existingSubcategory = await Subcategory.findOne({ subcatname: { $regex: new RegExp(`^${subcatname}$`, 'i') } });
+    const existingSubcategory = await Subcategory.findOne({
+      subcatname: { $regex: new RegExp(`^${subcatname}$`, "i") },
+    });
     if (existingSubcategory) {
       return res.status(400).json({ message: "Subcategory already exists." });
     }
 
     // Check for file upload
     if (!req.file) {
-      return res.status(400).json({ message: "File upload failed. Please provide an image." });
+      return res
+        .status(400)
+        .json({ message: "File upload failed. Please provide an image." });
     }
 
     // Increment the counter for subcategories
@@ -48,20 +51,24 @@ exports.addSubcategory = async (req, res) => {
 
     await newSubcategory.save();
 
-    res.status(201).json({ message: "Subcategory added successfully!", subcategory: newSubcategory });
+    res
+      .status(201)
+      .json({
+        message: "Subcategory added successfully!",
+        subcategory: newSubcategory,
+      });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create subcategory' });
+    res.status(500).json({ error: "Failed to create subcategory" });
   }
 };
-
 
 // Controller for fetching all subcategories
 exports.getSubcategories = async (req, res) => {
   try {
-    const subcategories = await Subcategory.find().populate('category', 'name');
+    const subcategories = await Subcategory.find().populate("category", "name");
     res.status(200).json(subcategories);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch subcategories' });
+    res.status(500).json({ error: "Failed to fetch subcategories" });
   }
 };
 
@@ -69,7 +76,7 @@ exports.getSubCategoryById = async (req, res) => {
   try {
     const id = req.params.id;
     const subcategory = await Subcategory.findOne({ _id: id });
-    
+
     return res.status(200).json(subcategory);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -92,7 +99,9 @@ exports.updateSubCategory = async (req, res) => {
     });
 
     if (existingSubcategory) {
-      return res.status(400).json({ message: "Subcategory name already exists" });
+      return res
+        .status(400)
+        .json({ message: "Subcategory name already exists" });
     }
 
     // Prepare update data
@@ -132,11 +141,11 @@ exports.deleteSubcategory = async (req, res) => {
     // Find and delete the subcategory
     const deletedSubcategory = await Subcategory.findByIdAndDelete(id);
     if (!deletedSubcategory) {
-      return res.status(404).json({ message: 'Subcategory not found' });
+      return res.status(404).json({ message: "Subcategory not found" });
     }
 
-    res.status(200).json({ message: 'Subcategory deleted successfully' });
+    res.status(200).json({ message: "Subcategory deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete subcategory' });
+    res.status(500).json({ error: "Failed to delete subcategory" });
   }
 };
