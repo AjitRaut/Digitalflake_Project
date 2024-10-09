@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux"; // Import useDispatch
+import { useDispatch } from "react-redux";
 import logo from "../assets/digitalflakelogo.png";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../Features/authSlice";
+import { login } from "../Features/Authslice";
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast
 
 const Login = () => {
-  const dispatch = useDispatch(); // Initialize dispatch
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,8 +39,6 @@ const Login = () => {
       });
 
       const data = await response.json();
-      console.log("Response Data:", data);
-      console.log("Response Status:", response.status);
 
       if (response.ok) {
         if (data.token) {
@@ -46,19 +46,19 @@ const Login = () => {
           dispatch(login());
           navigate("/home");
         } else {
-          setMessage(data.message || "Login failed. Please try again.");
+          toast.error(data.message || "Login failed. Please try again."); // Show toast for incorrect password
         }
       } else {
-        setMessage(data.message || "Login failed. Please try again.");
+        toast.error(data.message || "Login failed. Please try again."); // Show toast for error
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      setMessage("Login failed. Please try again.");
+      toast.error("Login failed. Please try again."); // Show toast for error
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-[85vh] bg-gray-100">
+      <ToastContainer /> {/* Add ToastContainer here */}
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <div className="flex flex-col items-center">
           <img src={logo} alt="Digitalflake Logo" className="h-16" />
@@ -122,14 +122,14 @@ const Login = () => {
             </Link>
           </div>
           <div className="flex justify-center mb-4">
-    <p className="text-sm text-gray-600">Don't have an account? </p>
-    <Link
-      to={"/register"}
-      className="text-purple-950 hover:text-purple-700 text-sm ml-1"
-    >
-      Sign Up
-    </Link>
-  </div>
+            <p className="text-sm text-gray-600">Don't have an account? </p>
+            <Link
+              to={"/register"}
+              className="text-purple-950 hover:text-purple-700 text-sm ml-1"
+            >
+              Sign Up
+            </Link>
+          </div>
           <button
             type="submit"
             className="w-full bg-purple-950 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded-md"
