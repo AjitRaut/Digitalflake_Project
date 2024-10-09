@@ -22,7 +22,7 @@ const MainContent = () => {
   return (
     <div className="container flex">
       {isLoggedIn && <Sidebar />} {/* Show Sidebar only if logged in */}
-      <div className="ml-64 mt-16 flex-grow">
+      <div className="ml-52 mt-20 flex-grow">
         <Outlet />
       </div>
     </div>
