@@ -6,6 +6,7 @@ import { BiSearch } from "react-icons/bi"; // Import a search icon
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Shimmerui from "./Shimmerui";
+import category from "../../assets/group.png"
 
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
@@ -123,23 +124,30 @@ const CategoryGrid = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-around items-center gap-3 mb-4">
+        <div className="flex justify-between items-center gap-2">
+        <img src={category} alt="category" className="w-5 h-5 mr-2" />
         <h1 className="text-xl font-bold">Category</h1>
+        </div>
+      
         <div className="flex items-center">
           <div className="relative">
-            <BiSearch className="absolute left-3 top-2 text-gray-400" />
+            <BiSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="border w-[600px] p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
+          <div className="ml-60">
           <Link to="/addcategory">
-            <button className="bg-purple-700 text-white px-4 py-2 rounded ml-4">
+            <button className="bg-purple-700 text-white px-4 py-2 rounded ">
               Add New
             </button>
           </Link>
+          </div>
+          
         </div>
       </div>
 
