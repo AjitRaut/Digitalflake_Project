@@ -20,9 +20,6 @@ const Shimmerui = () => {
           <td className="p-2 border">
             <div className="h-4 bg-gray-300 rounded w-16"></div>
           </td>
-          <td className="p-2 border">
-            <div className="h-4 bg-gray-300 rounded w-24"></div>
-          </td>
         </tr>
       ))}
     </>
