@@ -19,7 +19,8 @@ const AddProduct = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/categories");
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         setCategories(data);
       } catch (error) {
@@ -34,7 +35,9 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/subcategories");
+        const response = await axios.get(
+          "http://localhost:5000/api/subcategories"
+        );
         setSubcategories(response.data);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
@@ -52,7 +55,8 @@ const AddProduct = () => {
     }
 
     const filtered = subcategories.filter(
-      (subcategory) => subcategory.category && subcategory.category._id === selectedCategory
+      (subcategory) =>
+        subcategory.category && subcategory.category._id === selectedCategory
     );
 
     setFilteredSubcategories(filtered);
@@ -98,11 +102,15 @@ const AddProduct = () => {
     formData.append("image", imageFile);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/products",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       toast.success("Product added successfully!");
       setProductName("");
@@ -119,10 +127,12 @@ const AddProduct = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
-        <h2 className="text-xl font-semibold mb-8">Add Product</h2>
-        <div className="grid grid-cols-2 gap-8">
+        <h2 className="text-xl font-semibold mb-8 text-center">Add Product</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product Name
+            </label>
             <input
               type="text"
               value={productName}
@@ -133,14 +143,18 @@ const AddProduct = () => {
             />
           </div>
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Category
+            </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               required
             >
-              <option value="" disabled>Select a category</option>
+              <option value="" disabled>
+                Select a category
+              </option>
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
@@ -149,14 +163,18 @@ const AddProduct = () => {
             </select>
           </div>
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Subcategory
+            </label>
             <select
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               required
             >
-              <option value="" disabled>Select a subcategory</option>
+              <option value="" disabled>
+                Select a subcategory
+              </option>
               {filteredSubcategories.length > 0 ? (
                 filteredSubcategories.map((subcategory) => (
                   <option key={subcategory._id} value={subcategory._id}>
@@ -164,13 +182,17 @@ const AddProduct = () => {
                   </option>
                 ))
               ) : (
-                <option disabled>No subcategories available for the selected category</option>
+                <option disabled>
+                  No subcategories available for the selected category
+                </option>
               )}
             </select>
           </div>
         </div>
-        <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+        <div className="col-span-2 mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload Image
+          </label>
           <div className="flex flex-col items-center">
             <label htmlFor="file-input" className="cursor-pointer">
               <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
@@ -188,18 +210,28 @@ const AddProduct = () => {
             />
           </div>
           {imagePreview && (
-            <div className="mt-4">
-              <img src={imagePreview} alt="Uploaded" className="w-24 h-24 object-cover rounded border border-gray-300" />
+            <div className="mt-4 flex justify-center">
+              <img
+                src={imagePreview}
+                alt="Uploaded"
+                className="w-24 h-24 object-cover rounded border border-gray-300"
+              />
             </div>
           )}
         </div>
-        <div className="flex justify-end mt-8 space-x-4">
+        <div className="flex flex-col md:flex-row justify-center md:justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4">
           <Link to="/products">
-            <button type="button" className="px-6 py-2 border border-gray-300 rounded-full text-gray-600">
+            <button
+              type="button"
+              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 w-full md:w-auto"
+            >
               Cancel
             </button>
           </Link>
-          <button type="submit" className="px-6 py-2 bg-purple-700 text-white rounded-full">
+          <button
+            type="submit"
+            className="px-6 py-2 bg-purple-700 text-white rounded-full w-full md:w-auto"
+          >
             Save
           </button>
         </div>
