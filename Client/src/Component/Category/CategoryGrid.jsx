@@ -82,7 +82,9 @@ const CategoryGrid = () => {
         Header: "Status",
         accessor: "status",
         Cell: ({ value }) => (
-          <span className={value === "active" ? "text-green-500" : "text-red-500"}>
+          <span
+            className={value === "active" ? "text-green-500" : "text-red-500"}
+          >
             {value === "active" ? "Active" : "Inactive"}
           </span>
         ),
@@ -97,7 +99,10 @@ const CategoryGrid = () => {
                 <FiEdit />
               </button>
             </Link>
-            <button className="text-gray-500" onClick={() => handleDelete(row.original._id)}>
+            <button
+              className="text-gray-500"
+              onClick={() => handleDelete(row.original._id)}
+            >
               <RiDeleteBin5Line />
             </button>
           </div>
@@ -143,10 +148,16 @@ const CategoryGrid = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200" {...getTableProps()}>
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          {...getTableProps()}
+        >
           <thead>
             {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()} className="bg-yellow-100">
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-yellow-100"
+              >
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -154,7 +165,11 @@ const CategoryGrid = () => {
                   >
                     {column.render("Header")}
                     <span className="inline-block ml-1">
-                      <img src={sortIcon} alt="sort" className="w-3 h-3 inline" />
+                      <img
+                        src={sortIcon}
+                        alt="sort"
+                        className="w-3 h-3 inline"
+                      />
                     </span>
                   </th>
                 ))}
@@ -172,7 +187,10 @@ const CategoryGrid = () => {
                 return (
                   <tr {...row.getRowProps()} className="border-b">
                     {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()} className="p-2 border text-center">
+                      <td
+                        {...cell.getCellProps()}
+                        className="p-2 border text-center"
+                      >
                         {cell.render("Cell")}
                       </td>
                     ))}
@@ -204,7 +222,9 @@ const CategoryGrid = () => {
               </svg>
               <h3 className="text-lg font-semibold">Delete</h3>
             </div>
-            <p className="mb-4 text-gray-600">Are you sure you want to delete?</p>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to delete?
+            </p>
             <div className="flex justify-end">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md mr-2"
@@ -212,7 +232,10 @@ const CategoryGrid = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-md" onClick={confirmDelete}>
+              <button
+                className="px-4 py-2 bg-purple-600 text-white rounded-md"
+                onClick={confirmDelete}
+              >
                 Confirm
               </button>
             </div>
