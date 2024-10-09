@@ -6,12 +6,14 @@ import { BiSearch } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ShimmerUI from "./Shimmerui";
+import subcategoryicon from "../../assets/list.png";
+import sortIcon from "../../assets/sort.png";
 
 const SubcategoryGrid = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true); // State to track loading status
+  const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -31,14 +33,12 @@ const SubcategoryGrid = () => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/subcategories"
-      );
+      const response = await axios.get("http://localhost:5000/api/subcategories");
       setSubcategories(response.data);
-      setLoading(false); // Set loading to false once data is fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      setLoading(false); // Set loading to false even if there is an error
+      setLoading(false);
     }
   };
 
@@ -69,13 +69,9 @@ const SubcategoryGrid = () => {
   const confirmDelete = async () => {
     if (deleteId) {
       try {
-        await axios.delete(
-          `http://localhost:5000/api/subcategories/${deleteId}`
-        );
+        await axios.delete(`http://localhost:5000/api/subcategories/${deleteId}`);
         setSubcategories((prevSubcategories) =>
-          prevSubcategories.filter(
-            (subcategory) => subcategory._id !== deleteId
-          )
+          prevSubcategories.filter((subcategory) => subcategory._id !== deleteId)
         );
         setShowDeleteModal(false);
       } catch (error) {
@@ -92,7 +88,7 @@ const SubcategoryGrid = () => {
         Cell: ({ row }) => row.index + 1,
       },
       {
-        Header: "Subcategory Name",
+        Header: "SubCategory Name",
         accessor: "subcatname",
       },
       {
@@ -103,16 +99,16 @@ const SubcategoryGrid = () => {
         Header: "Image",
         accessor: "image",
         Cell: ({ value }) => (
-          <img src={value} alt="Product" className="w-10 h-10" />
+          <div className="flex justify-center items-center">
+            <img src={value} alt="Product" className="w-10 h-10" />
+          </div>
         ),
       },
       {
         Header: "Status",
         accessor: "status",
         Cell: ({ value }) => (
-          <span
-            className={value === "active" ? "text-green-500" : "text-red-500"}
-          >
+          <span className={value === "active" ? "text-green-500" : "text-red-500"}>
             {value === "active" ? "Active" : "Inactive"}
           </span>
         ),
@@ -121,7 +117,7 @@ const SubcategoryGrid = () => {
         Header: "Action",
         accessor: "action",
         Cell: ({ row }) => (
-          <div>
+          <div className="flex justify-center">
             <Link to={`/editsubcategory/${row.original._id}`}>
               <button className="mr-2 text-gray-500">
                 <FiEdit />
@@ -151,20 +147,24 @@ const SubcategoryGrid = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Subcategory</h1>
-        <div className="flex items-center">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <img src={subcategoryicon} alt="category" className="w-5 h-5" />
+          <h1 className="text-2xl font-bold">SubCategory</h1>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center gap-4 mt-4 md:mt-0">
           <div className="relative">
-            <BiSearch className="absolute left-3 top-2 text-gray-400" />
+            <BiSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border p-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="border border-gray-300 w-full md:w-80 p-2 pl-10 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
           <Link to="/addsubcategory">
-            <button className="bg-purple-700 text-white px-4 py-2 rounded ml-4">
+            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition duration-200">
               Add New
             </button>
           </Link>
@@ -180,20 +180,16 @@ const SubcategoryGrid = () => {
             {headerGroups.map((headerGroup) => (
               <tr
                 {...headerGroup.getHeaderGroupProps()}
-                className="bg-yellow-100"
+                className="bg-yellow-100 text-center"
               >
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="p-2 border"
+                    className="p-2 border text-center"
                   >
                     {column.render("Header")}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
+                    <span className="inline-block ml-1">
+                      <img src={sortIcon} alt="sort" className="w-3 h-3 inline" />
                     </span>
                   </th>
                 ))}
@@ -202,14 +198,14 @@ const SubcategoryGrid = () => {
           </thead>
           <tbody {...getTableBodyProps()}>
             {loading ? (
-              <ShimmerUI /> // Display the ShimmerUI while loading
+              <ShimmerUI />
             ) : (
               rows.map((row) => {
                 prepareRow(row);
                 return (
                   <tr {...row.getRowProps()} className="border-b">
                     {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()} className="p-2 border">
+                      <td {...cell.getCellProps()} className="p-2 border text-center">
                         {cell.render("Cell")}
                       </td>
                     ))}

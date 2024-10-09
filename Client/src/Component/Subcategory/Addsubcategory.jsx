@@ -35,35 +35,34 @@ const AddSubcategory = () => {
     const formData = new FormData();
     formData.append("subcatname", subcategoryName);
     formData.append("categoryId", selectedCategory);
-    
-    // Add categoryName based on the selected category
-    const selectedCategoryObject = categories.find(cat => cat._id === selectedCategory);
+
+    const selectedCategoryObject = categories.find(
+      (cat) => cat._id === selectedCategory
+    );
     if (selectedCategoryObject) {
       formData.append("categoryName", selectedCategoryObject.name);
     }
-  
+
     if (imageFile) {
       formData.append("image", imageFile);
     }
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/subcategories", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        
-        // Check if the error message indicates that the subcategory name already exists
         if (errorData.message === "Subcategory already exists.") {
-          toast.error("Subcategory name already exists."); // Show the specific error message
+          toast.error("Subcategory name already exists.");
         } else {
-          toast.error(errorData.message || "Error adding subcategory."); // Show a generic error message
+          toast.error(errorData.message || "Error adding subcategory.");
         }
-        return; // Exit the function if there's an error
+        return;
       }
-  
+
       const data = await response.json();
       toast.success("Subcategory added successfully!");
       setSubcategoryName("");
@@ -74,14 +73,16 @@ const AddSubcategory = () => {
       toast.error("Error adding subcategory. Please try again.");
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
         <h2 className="text-xl font-semibold mb-8">Add Subcategory</h2>
-        <div className="grid grid-cols-2 gap-8">
-          <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory Name</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Subcategory Name
+            </label>
             <input
               type="text"
               value={subcategoryName}
@@ -91,15 +92,19 @@ const AddSubcategory = () => {
               required
             />
           </div>
-          <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Category
+            </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               required
             >
-              <option value="" disabled>Select a category</option>
+              <option value="" disabled>
+                Select a category
+              </option>
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
@@ -108,12 +113,16 @@ const AddSubcategory = () => {
             </select>
           </div>
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Image
+            </label>
             <div className="flex flex-col items-center">
               <label htmlFor="file-input" className="cursor-pointer">
                 <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
                   <p className="text-gray-500 text-sm">Upload an image</p>
-                  <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    Maximum size: 10MB
+                  </p>
                 </div>
               </label>
               <input
@@ -126,16 +135,30 @@ const AddSubcategory = () => {
             </div>
             {image && (
               <div className="mt-4">
-                <img src={image} alt="Uploaded" className="w-24 h-24 object-cover rounded border border-gray-300" />
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  className="w-24 h-24 object-cover rounded border border-gray-300"
+                />
               </div>
             )}
           </div>
         </div>
         <div className="flex justify-end mt-8 space-x-4">
           <Link to="/subcategory">
-            <button type="button" className="px-6 py-2 border border-gray-300 rounded-full text-gray-600">Cancel</button>
+            <button
+              type="button"
+              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
+            >
+              Cancel
+            </button>
           </Link>
-          <button type="submit" className="px-6 py-2 bg-purple-700 text-white rounded-full">Save</button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-purple-700 text-white rounded-full"
+          >
+            Save
+          </button>
         </div>
       </div>
       <ToastContainer />
