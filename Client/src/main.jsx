@@ -1,81 +1,77 @@
-import { createBrowserRouter, RouterProvider , Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import * as ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import Login from "./Component/Login.jsx";
-import ForgotPassword from "./Component/ForgotPassword.jsx";
-import MainContent from "./Component/MainComponent.jsx";
-import Register from "./Component/Register.jsx";
+import Login from "./Component/Auth/Login.jsx";
+import Register from "./Component/Auth/Register.jsx";
 import CategoryGrid from "./Component/Category/CategoryGrid.jsx";
 import AddCategory from "./Component/Category/AddCategory.jsx";
 import Products from "./Component/Products/Products.jsx";
-import EditCategory from "./Component/Category/Editcategory.jsx";
+import EditCategory from "./Component/Category/EditCategory.jsx";
 import SubCategoryGrid from "./Component/Subcategory/SubCategoryGrid.jsx";
-import Editsubcategory from "./Component/Subcategory/Editsubcategory.jsx";
-import Addsubcategory from "./Component/Subcategory/Addsubcategory.jsx";
+import EditSubCategory from "./Component/Subcategory/Editsubcategory.jsx";
+import AddSubCategory from "./Component/Subcategory/AddSubCategory.jsx";
 import AddProduct from "./Component/Products/AddProduct.jsx";
 import EditProduct from "./Component/Products/EditProduct.jsx";
+import Home from "./Component/Home/Home.jsx";
 
 const AppRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/login" />, // Redirect to home or login based on auth logic
+  },
+
   {
     path: "/",
     element: <App />,
     children: [
       {
-        path: "/login",
+        path: "home",
+        element: <Home />,
+      },
+      {
+        path: "login",
         element: <Login />,
       },
       {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login/forgotpassword",
-        element: <ForgotPassword />,
-      },
-      {
-        path: "/home",
-        element: <MainContent />,
-      },
-      {
-        path: "/category",
+        path: "category",
         element: <CategoryGrid />,
       },
       {
-        path: "/addcategory",
+        path: "addcategory",
         element: <AddCategory />,
       },
       {
-        path: "/editcategory/:id",
-        element: <EditCategory/>
+        path: "editcategory/:id",
+        element: <EditCategory />,
       },
       {
-        path: "/products",
+        path: "products",
         element: <Products />,
       },
       {
-        path : "Subcategory",
-        element : <SubCategoryGrid/>
+        path: "subcategory",
+        element: <SubCategoryGrid />,
       },
       {
-        path: "/addsubcategory",
-        element: <Addsubcategory/>
+        path: "addsubcategory",
+        element: <AddSubCategory />,
       },
       {
-        path: "/editsubcategory/:id",
-        element:<Editsubcategory/>
+        path: "editsubcategory/:id",
+        element: <EditSubCategory />,
       },
       {
-        path:"/addproduct",
-        element : <AddProduct/>
+        path: "addproduct",
+        element: <AddProduct />,
       },
       {
-        path : "/editproduct/:id",
-        element : <EditProduct/>
-      },
-      {
-        path: "/", // Catch-all route for undefined paths
-        element: <Navigate to="/login" />, // Redirect to login for undefined routes
+        path: "editproduct/:id",
+        element: <EditProduct />,
       },
     ],
   },

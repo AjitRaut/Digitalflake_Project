@@ -41,7 +41,7 @@ const Register = () => {
   
 
   return (
-    <div className="flex justify-center items-center min-h-[85vh] bg-gray-100">
+    <div className="flex justify-center items-center min-h-[90vh] bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-xl font-normal text-gray-500 text-center mb-4">
           Welcome to Digitalflake admin

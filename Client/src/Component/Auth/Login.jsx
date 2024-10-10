@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import logo from "../assets/digitalflakelogo.png";
+import logo from "../../assets/digitalflakelogo.png";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../Features/Authslice";
+import { login } from "../../App/Authslice";
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast
 
@@ -57,8 +57,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[85vh] bg-gray-100">
-      <ToastContainer /> {/* Add ToastContainer here */}
+    <div className="flex justify-center items-center min-h-[90vh] bg-gray-100">
+      <ToastContainer /> 
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <div className="flex flex-col items-center">
           <img src={logo} alt="Digitalflake Logo" className="h-16" />
@@ -113,14 +113,6 @@ const Login = () => {
 
           {message && <p className="text-center text-red-600">{message}</p>}
 
-          <div className="flex justify-end mb-4">
-            <Link
-              to={"/login/forgotpassword"}
-              className="text-purple-950 hover:text-purple-950 text-sm text-right"
-            >
-              Forgot Password?
-            </Link>
-          </div>
           <div className="flex justify-center mb-4">
             <p className="text-sm text-gray-600">Don't have an account? </p>
             <Link

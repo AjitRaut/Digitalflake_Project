@@ -1,9 +1,10 @@
-import React from "react";
-import dflakelogo from "../assets/digitalflakelogo.png";
+import React from 'react'
+import dflakelogo from "../../assets/digitalflakelogo.png";
 
-function MainContent() {
+const Home = () => {
   return (
-    <div className="flex justify-center items-center h-[85vh]">
+    <>
+       <div className="flex justify-center items-center h-[85vh]">
       <div className="text-center p-10">
         <img
           src={dflakelogo}
@@ -16,7 +17,8 @@ function MainContent() {
         </h1>
       </div>
     </div>
-  );
+    </>
+  )
 }
 
-export default MainContent;
+export default Home

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import home from "../assets/home.png";
-import category from "../assets/group.png";
-import list from "../assets/list.png";
-import product from "../assets/product.png";
+import home from "../../assets/home.png";
+import category from "../../assets/group.png";
+import list from "../../assets/list.png";
+import product from "../../assets/product.png";
 import { VscTriangleRight } from "react-icons/vsc";
 
 function Sidebar() {

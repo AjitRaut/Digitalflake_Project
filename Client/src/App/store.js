@@ -1,6 +1,6 @@
 // store.js (or wherever your store is configured)
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../Features/Authslice";
+import authReducer from "./Authslice";
 
 const getInitialAuthState = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
