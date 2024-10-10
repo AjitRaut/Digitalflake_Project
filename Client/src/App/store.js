@@ -1,4 +1,4 @@
-// store.js (or wherever your store is configured)
+// store.js
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./Authslice";
 
@@ -10,16 +10,17 @@ const getInitialAuthState = () => {
   return {
     isLoggedIn,
     isRegistered,
-    firstName: firstName || null, // Ensure it returns null if firstName is not set
+    firstName: firstName || null,
   };
 };
 
-// Create the Redux store
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     auth: authReducer,
   },
   preloadedState: {
-    auth: getInitialAuthState(), // Set initial state from local storage
+    auth: getInitialAuthState(),
   },
 });
+
+export default store; // Default export
