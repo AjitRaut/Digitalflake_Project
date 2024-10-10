@@ -6,6 +6,5 @@ const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/forgot-password', requestPasswordReset); // Add this line
 
 module.exports = router;
