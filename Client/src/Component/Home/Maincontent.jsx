@@ -1,4 +1,3 @@
-// src/Component/MainContent.jsx
 import { Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -7,13 +6,12 @@ import Sidebar from "./Sidebar";
 
 const MainContent = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  console.log(isLoggedIn)
   const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
     if (loggedInStatus) {
-      dispatch(login()); // Set Redux state if user is logged in
+      dispatch(login()); 
     }
   }, [dispatch]);
 
@@ -21,8 +19,10 @@ const MainContent = () => {
     <div className="container flex">
       {isLoggedIn ? (
         <>
+          {/* Sidebar will take full width on mobile and fixed width on larger screens */}
           <Sidebar />
-          <div className="ml-52 mt-20 flex-grow">
+          {/* On large screens, give margin-left to the content for sidebar spacing */}
+          <div className="mt-20 flex-grow lg:ml-64 md:ml-0">
             <Outlet />
           </div>
         </>

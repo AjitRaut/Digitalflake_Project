@@ -14,56 +14,79 @@ function Sidebar() {
   };
 
   return (
-    <aside className="fixed top-16 left-0 bg-gray-100 min-h-[100vh] max-w-64 p-6">
-      <nav>
-        <ul>
-          <li className="mb-6 flex items-center">
-            <Link
-              to="/home"
-              className={`flex items-center text-lg w-full ${active === "home" ? "bg-yellow-200" : ""}`}
-              onClick={() => handleClick("home")}
-            >
-              <img src={home} alt="home" className="w-5 h-5 mr-2" />
-              <span className="flex-grow">Home</span>
-              <VscTriangleRight className="ml-2" />
-            </Link>
-          </li>
-          <li className="mb-6 flex items-center">
-            <Link
-              to="/category"
-              className={`flex items-center text-lg w-full ${active === "category" ? "bg-yellow-200" : ""}`}
-              onClick={() => handleClick("category")}
-            >
-              <img src={category} alt="category" className="w-5 h-5 mr-2" />
-              <span className="flex-grow">Category</span>
-              <VscTriangleRight className="ml-2" />
-            </Link>
-          </li>
-          <li className="mb-6 flex items-center">
-            <Link
-              to="/subcategory"
-              className={`flex items-center text-lg w-full ${active === "subcategory" ? "bg-yellow-200" : ""}`}
-              onClick={() => handleClick("subcategory")}
-            >
-              <img src={list} alt="subcategory" className="w-5 h-5 mr-2" />
-              <span className="flex-grow">Subcategory</span>
-              <VscTriangleRight className="ml-2" />
-            </Link>
-          </li>
-          <li className="flex items-center">
-            <Link
-              to="/products"
-              className={`flex items-center text-lg w-full ${active === "products" ? "bg-yellow-200" : ""}`}
-              onClick={() => handleClick("products")}
-            >
-              <img src={product} alt="products" className="w-5 h-5 mr-2" />
-              <span className="flex-grow">Products</span>
-              <VscTriangleRight className="ml-2" />
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+    <>
+      {/* Sidebar */}
+      <aside
+        className={`fixed bottom-0 w-full lg:w-64 lg:top-16 lg:left-0 bg-gray-100 p-6 z-40 transition-transform transform
+          lg:translate-x-0 lg:translate-y-0 lg:block
+        `}
+      >
+        <nav className="lg:flex lg:flex-col">
+          <ul className="lg:block flex justify-around">
+            <li className="mb-6 flex items-center lg:mb-4">
+              <Link
+                to="/home"
+                className={`flex items-center text-lg w-full justify-center lg:justify-start ${
+                  active === "home" ? "bg-yellow-200" : ""
+                }`}
+                onClick={() => handleClick("home")}
+              >
+                <img src={home} alt="home" className="w-5 h-5 mr-0 lg:mr-2" />
+                <span className="lg:flex-grow hidden lg:block">Home</span>
+                <VscTriangleRight className="ml-2 hidden lg:block" />
+              </Link>
+            </li>
+            <li className="mb-6 flex items-center lg:mb-4">
+              <Link
+                to="/category"
+                className={`flex items-center text-lg w-full justify-center lg:justify-start ${
+                  active === "category" ? "bg-yellow-200" : ""
+                }`}
+                onClick={() => handleClick("category")}
+              >
+                <img
+                  src={category}
+                  alt="category"
+                  className="w-5 h-5 mr-0 lg:mr-2"
+                />
+                <span className="lg:flex-grow hidden lg:block">Category</span>
+                <VscTriangleRight className="ml-2 hidden lg:block" />
+              </Link>
+            </li>
+            <li className="mb-6 flex items-center lg:mb-4">
+              <Link
+                to="/subcategory"
+                className={`flex items-center text-lg w-full justify-center lg:justify-start ${
+                  active === "subcategory" ? "bg-yellow-200" : ""
+                }`}
+                onClick={() => handleClick("subcategory")}
+              >
+                <img src={list} alt="subcategory" className="w-5 h-5 mr-0 lg:mr-2" />
+                <span className="lg:flex-grow hidden lg:block">Subcategory</span>
+                <VscTriangleRight className="ml-2 hidden lg:block" />
+              </Link>
+            </li>
+            <li className="mb-6 flex items-center lg:mb-4">
+              <Link
+                to="/products"
+                className={`flex items-center text-lg w-full justify-center lg:justify-start ${
+                  active === "products" ? "bg-yellow-200" : ""
+                }`}
+                onClick={() => handleClick("products")}
+              >
+                <img
+                  src={product}
+                  alt="products"
+                  className="w-5 h-5 mr-0 lg:mr-2"
+                />
+                <span className="lg:flex-grow hidden lg:block">Products</span>
+                <VscTriangleRight className="ml-2 hidden lg:block" />
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+    </>
   );
 }
 
