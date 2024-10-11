@@ -17,7 +17,7 @@ function Sidebar() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed bottom-0 w-full lg:w-64 lg:top-16 lg:left-0 bg-gray-100 p-6 z-40 transition-transform transform
+        className={`fixed bottom-0 w-full lg:w-52 lg:top-16 lg:left-0 bg-gray-100 p-6 z-40 transition-transform transform
           lg:translate-x-0 lg:translate-y-0 lg:block
         `}
       >
