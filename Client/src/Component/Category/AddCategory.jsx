@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddCategory = () => {
   const [categoryName, setCategoryName] = useState("");
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -40,8 +41,9 @@ const AddCategory = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       toast.success("Category added successfully!");
+      navigate("/category");
+
 
       setCategoryName("");
       setImage(null);
@@ -55,8 +57,10 @@ const AddCategory = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
-          <h2 className="text-xl font-semibold mb-8">Add Category</h2>
+      <div className="bg-white lg:min-h-[85vh] md:min-h-screen p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
+          <h2 className="text-xl md:text-2xl font-semibold mb-8">
+            Add Category
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Category Name Input */}
@@ -122,7 +126,7 @@ const AddCategory = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col md:flex-row justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex flex-col md:flex-row justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4 sticky bottom-0 bg-white py-4 px-6 ">
             <Link to={"/category"}>
               <button
                 type="button"
@@ -141,7 +145,21 @@ const AddCategory = () => {
           </div>
         </div>
       </form>
-      <ToastContainer />
+
+      {/* Responsive Toastify Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        toastClassName="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto"
+        bodyClassName="text-sm sm:text-base"
+      />
     </>
   );
 };

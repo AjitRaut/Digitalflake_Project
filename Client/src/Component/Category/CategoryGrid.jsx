@@ -93,7 +93,7 @@ const CategoryGrid = () => {
         Header: "Action",
         accessor: "action",
         Cell: ({ row }) => (
-          <div>
+          <div className="flex justify-center">
             <Link to={`/editcategory/${row.original._id}`}>
               <button className="mr-2 text-gray-500">
                 <FiEdit />
@@ -149,7 +149,7 @@ const CategoryGrid = () => {
 
       <div className="overflow-x-auto">
         <table
-          className="min-w-full bg-white border border-gray-200"
+          className="min-w-full bg-white border border-gray-200 text-sm sm:text-base"
           {...getTableProps()}
         >
           <thead>
@@ -161,7 +161,7 @@ const CategoryGrid = () => {
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="p-2 border"
+                    className="p-2 border text-left"
                   >
                     {column.render("Header")}
                     <span className="inline-block ml-1">
@@ -182,21 +182,29 @@ const CategoryGrid = () => {
             </tbody>
           ) : (
             <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()} className="border-b">
-                    {row.cells.map((cell) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className="p-2 border text-center"
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
+              {rows.length > 0 ? (
+                rows.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()} className="border-b">
+                      {row.cells.map((cell) => (
+                        <td
+                          {...cell.getCellProps()}
+                          className="p-2 border text-center"
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={columns.length} className="p-2 text-center">
+                    {searchTerm ? "No categories found." : "No categories available."}
+                  </td>
+                </tr>
+              )}
             </tbody>
           )}
         </table>
