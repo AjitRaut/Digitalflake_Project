@@ -33,7 +33,9 @@ const SubcategoryGrid = () => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/subcategories");
+      const response = await axios.get(
+        "http://localhost:5000/api/subcategories"
+      );
       setSubcategories(response.data);
       setLoading(false);
     } catch (error) {
@@ -69,9 +71,13 @@ const SubcategoryGrid = () => {
   const confirmDelete = async () => {
     if (deleteId) {
       try {
-        await axios.delete(`http://localhost:5000/api/subcategories/${deleteId}`);
+        await axios.delete(
+          `http://localhost:5000/api/subcategories/${deleteId}`
+        );
         setSubcategories((prevSubcategories) =>
-          prevSubcategories.filter((subcategory) => subcategory._id !== deleteId)
+          prevSubcategories.filter(
+            (subcategory) => subcategory._id !== deleteId
+          )
         );
         setShowDeleteModal(false);
       } catch (error) {
@@ -108,7 +114,9 @@ const SubcategoryGrid = () => {
         Header: "Status",
         accessor: "status",
         Cell: ({ value }) => (
-          <span className={value === "active" ? "text-green-500" : "text-red-500"}>
+          <span
+            className={value === "active" ? "text-green-500" : "text-red-500"}
+          >
             {value === "active" ? "Active" : "Inactive"}
           </span>
         ),
@@ -147,24 +155,24 @@ const SubcategoryGrid = () => {
 
   return (
     <div className="p-4">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
         <div className="flex items-center gap-2">
-          <img src={subcategoryicon} alt="category" className="w-5 h-5" />
+          <img src={subcategoryicon} alt="subcategory" className="w-5 h-5" />
           <h1 className="text-2xl font-bold">SubCategory</h1>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-4 mt-4 md:mt-0">
-          <div className="relative">
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full md:w-80">
             <BiSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 w-full md:w-80 p-2 pl-10 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="border border-gray-300 w-full p-2 pl-10 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
           <Link to="/addsubcategory">
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition duration-200">
+            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition duration-200 w-full md:w-auto">
               Add New
             </button>
           </Link>
@@ -189,7 +197,11 @@ const SubcategoryGrid = () => {
                   >
                     {column.render("Header")}
                     <span className="inline-block ml-1">
-                      <img src={sortIcon} alt="sort" className="w-3 h-3 inline" />
+                      <img
+                        src={sortIcon}
+                        alt="sort"
+                        className="w-3 h-3 inline"
+                      />
                     </span>
                   </th>
                 ))}
@@ -200,26 +212,39 @@ const SubcategoryGrid = () => {
             {loading ? (
               <ShimmerUI />
             ) : (
-              rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()} className="border-b">
-                    {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()} className="p-2 border text-center">
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
+              <>
+                {rows.length > 0 ? (
+                  rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <tr {...row.getRowProps()} className="border-b">
+                        {row.cells.map((cell) => (
+                          <td
+                            {...cell.getCellProps()}
+                            className="p-2 border text-center"
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={columns.length} className="p-2 text-center">
+                      {searchTerm ? "No subcategories found." : "No subcategories available."}
+                    </td>
                   </tr>
-                );
-              })
+                )}
+              </>
             )}
           </tbody>
         </table>
       </div>
 
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-          <div className="bg-white p-5 rounded-lg shadow-xl">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-lg shadow-xl max-w-sm w-full mx-2">
             <div className="flex items-center mb-4">
               <svg
                 className="w-6 h-6 text-red-500 mr-2"

@@ -75,10 +75,12 @@ const AddSubcategory = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="bg-white p-6 shadow-lg rounded-lg max-w-5xl mx-auto mt-10">
-        <h2 className="text-xl font-semibold mb-8">Add Subcategory</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <form onSubmit={handleSubmit} className="flex-1 pb-24 md:pb-6">
+      <div className="bg-white mt-10 p-4 sm:p-6 shadow-lg rounded-lg max-w-5xl mx-auto w-full">
+        <h2 className="text-xl font-semibold mb-6 sm:mb-8 text-center md:text-left">
+          Add Subcategory
+        </h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Subcategory Name
@@ -112,17 +114,15 @@ const AddSubcategory = () => {
               ))}
             </select>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-1 sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Upload Image
             </label>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center sm:items-start">
               <label htmlFor="file-input" className="cursor-pointer">
-                <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
                   <p className="text-gray-500 text-sm">Upload an image</p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    Maximum size: 10MB
-                  </p>
+                  <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
                 </div>
               </label>
               <input
@@ -134,7 +134,7 @@ const AddSubcategory = () => {
               />
             </div>
             {image && (
-              <div className="mt-4">
+              <div className="mt-4 flex justify-center sm:justify-start">
                 <img
                   src={image}
                   alt="Uploaded"
@@ -144,18 +144,18 @@ const AddSubcategory = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-end mt-8 space-x-4">
+        <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
           <Link to="/subcategory">
             <button
               type="button"
-              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-full text-gray-600"
             >
               Cancel
             </button>
           </Link>
           <button
             type="submit"
-            className="px-6 py-2 bg-purple-700 text-white rounded-full"
+            className="w-full sm:w-auto px-6 py-2 bg-purple-700 text-white rounded-full"
           >
             Save
           </button>
