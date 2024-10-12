@@ -84,3 +84,26 @@ Check out the live project: [Digitalflake Admin Panel](https://your-live-demo-li
 ├── .gitignore         # Ignored files
 ├── README.md          # Project documentation
 └── package.json       # Node.js dependencies and scripts
+```
+## Database Design
+
+- **User**: Stores user login credentials (hashed passwords).
+- **Category**: Stores product categories.
+- **Subcategory**: Stores subcategories associated with a category.
+- **Product**: Stores product details, associated with both a category and subcategory.
+## Functionality
+
+- **Authentication**: Users can log in securely using JWT authentication.
+- **Dashboard**: The dashboard provides an overview of categories, subcategories, and products.
+- **Category Management**: Add, edit, and delete categories.
+- **Subcategory Management**: Manage subcategories within a category.
+- **Product Management**: Create, edit, and delete products with associations to categories and subcategories.
+## Authentication and Security
+
+- **JWT Tokens**: Used for session management and secure API access.
+- **Bcrypt**: Passwords are hashed using bcrypt before being stored in the database.
+## Bonus Features
+
+- **Responsive Design**: The admin panel is responsive and adapts to different screen sizes using Tailwind CSS.
+- **React Data Grid/React Table**: Efficient data management with Searching and sorting functionality.
+
