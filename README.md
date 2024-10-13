@@ -1,57 +1,109 @@
-# Digitalflake Job Hackathon Assignment
+# Digitalflake Admin Panel
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Technologies Used](#technologies-used)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Folder Structure](#folder-structure)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
+This project is an **admin panel** for managing categories, subcategories, and products, developed for **Digitalflake** as part of a full-stack development task. The project utilizes the MERN stack, Tailwind CSS for styling, JWT for authentication, and React Data Table/Grid for data management.
 
-## Project Overview
+## 🖥️ Live Demo
 
-This project was developed as part of the Digitalflake 2024 '8 hrs Job Hackathon.' The application was built using **React** for the frontend and **Node.js** for the backend. It demonstrates skills in full-stack development, focusing on user authentication, database interactions, and front-end user interfaces using a data grid for displaying records.
-
-The goal is to develop an application that is scalable and maintainable, with clean commits and functional features that work across different devices and screen sizes.
-
-## Technologies Used
-
-### Frontend
-- **React**: JavaScript library for building user interfaces.
-- **React Data Grid / React Table**: To display data in a grid/table format.
-- **Tailwind CSS**: Utility-first CSS framework for responsive designs.
-- **React Bootstrap**: Optional, for building responsive UIs.
-- **Context API / Redux**: State management (either is acceptable).
-
-### Backend
-- **Node.js**: JavaScript runtime for server-side code.
-- **Express.js**: Web framework for Node.js.
-- **JWT (jsonwebtoken)**: For user authentication and token management.
-- **bcrypt**: To securely hash user passwords.
-
-### Database
-- **MongoDB**: NoSQL database for storing user and application data.
-
-### Bonus
-- **TypeScript**: Optional, for adding static type checking to the JavaScript codebase.
+Check out the live project: [Digitalflake Admin Panel](https://your-live-demo-link.com)
 
 ## Features
-- User Authentication with JWT.
-- Password encryption using bcrypt.
-- Responsive UI with React and Tailwind CSS.
-- Data displayed in a grid using React Data Grid or React Table.
-- CRUD operations on the backend with MongoDB.
-- Secure API with token-based authentication.
 
-## Getting Started
+- **Authentication**: Users can log in using their credentials. Passwords are securely hashed using bcrypt, and JWT tokens are used for session management.
+- **Dashboard**: Displays categories, subcategories, and products with options to add, edit, and delete them.
+- **Category Management**: Create, edit, and delete product categories and subcategories.
+- **Product Management**: Add, edit, and delete products, each associated with a category and subcategory.
+- **Data Grid**: React Data Grid/React Table is used to display and manage large datasets with sorting, pagination, and search functionality.
 
-To get a local copy up and running, follow these steps.
+## Tech Stack
 
-### Prerequisites
-- Node.js
-- MongoDB
-- Git
+- **Frontend**: React.js, Tailwind CSS, React Data Grid/React Table
+- **Backend**: Node.js, Express.js, MongoDB
+- **Authentication**: JWT (JSON Web Tokens) and bcrypt for secure authentication
+- **Database**: MongoDB for storing users, categories, subcategories, and products.
+
+## Installation and Setup Instructions
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/digitalflake-admin-panel.git
+    ```
+
+2. Navigate to the project directory:
+
+    ```bash
+    cd digitalflake-admin-panel
+    ```
+
+3. Install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+4. Set up environment variables:
+
+    - Create a `.env` file in the root directory with the following variables:
+
+    ```bash
+    MONGO_URI=your-mongodb-uri
+    JWT_SECRET=your-jwt-secret
+    ```
+
+5. Start the backend server:
+
+    ```bash
+    cd server
+    npm start
+    ```
+
+6. Start the frontend development server:
+
+    ```bash
+    cd client
+    npm start
+    ```
+
+7. Open the app in your browser:
+
+    ```bash
+    http://localhost:3000
+    ```
+
+## Project Structure
+
+```bash
+├── client             # React frontend
+│   ├── public         # Static assets
+│   └── src            # React components, services, and styles
+├── server             # Backend Express server
+│   ├── controllers    # API controllers
+│   ├── models         # MongoDB models (User, Category, Subcategory, Product)
+│   └── routes         # API routes for CRUD operations and authentication
+├── .env               # Environment variables
+├── .gitignore         # Ignored files
+├── README.md          # Project documentation
+└── package.json       # Node.js dependencies and scripts
+```
+## Database Design
+
+- **User**: Stores user login credentials (hashed passwords).
+- **Category**: Stores product categories.
+- **Subcategory**: Stores subcategories associated with a category.
+- **Product**: Stores product details, associated with both a category and subcategory.
+## Functionality
+
+- **Authentication**: Users can log in securely using JWT authentication.
+- **Dashboard**: The dashboard provides an overview of categories, subcategories, and products.
+- **Category Management**: Add, edit, and delete categories.
+- **Subcategory Management**: Manage subcategories within a category.
+- **Product Management**: Create, edit, and delete products with associations to categories and subcategories.
+## Authentication and Security
+
+- **JWT Tokens**: Used for session management and secure API access.
+- **Bcrypt**: Passwords are hashed using bcrypt before being stored in the database.
+## Bonus Features
+
+- **Responsive Design**: The admin panel is responsive and adapts to different screen sizes using Tailwind CSS.
+- **React Data Grid/React Table**: Efficient data management with Searching and sorting functionality.
+
