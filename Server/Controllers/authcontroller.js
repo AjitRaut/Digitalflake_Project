@@ -7,23 +7,29 @@ const User = require('../Models/user');
 
 // Register user
 const register = async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
+  const { email, password, confirmPassword, firstName, lastName } = req.body;
   try {
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
 
+    // Check if password and confirmPassword match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = new User({ email, password: hashedPassword, firstName, lastName });
-    console.log(newUser);
     await newUser.save();
 
+    // Create JWT token
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // Login user
 const login = async (req, res) => {
@@ -42,6 +48,4 @@ const login = async (req, res) => {
   }
 };
 
-
-
-module.exports = { register, login};
+module.exports = { register, login };
