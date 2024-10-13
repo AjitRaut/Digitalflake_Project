@@ -158,33 +158,32 @@ const AddProduct = () => {
               </select>
             </div>
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
-              <div className="flex flex-col md:flex-row items-center">
-                <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors mb-4 md:mb-0 md:mr-4">
-                  <label htmlFor="file-input" className="cursor-pointer text-center">
-                    <p className="text-gray-500 text-sm">Upload an image</p>
-                    <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
-                  </label>
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept="image/jpeg,image/png,image/gif"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    required
-                  />
-                </div>
-                {imagePreview && (
-                  <div className="mt-4 md:mt-0">
-                    <img
-                      src={imagePreview}
-                      alt="Uploaded"
-                      className="w-24 h-24 object-cover rounded border border-gray-300"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+  <div className="border border-dashed border-gray-300 rounded-md p-4 flex flex-col md:flex-row items-center">
+    {imagePreview ? (
+      <img src={imagePreview} alt="Uploaded" className="w-24 h-28 object-cover mb-2 md:mb-0 md:mr-4" />
+    ) : (
+      <div className="w-24 h-28 bg-gray-200 mb-2 md:mb-0 md:mr-4 flex items-center justify-center">
+        <span className="text-gray-400">No image</span>
+      </div>
+    )}
+    <div className="text-center flex-1">
+      <label htmlFor="file-input" className="cursor-pointer flex flex-col items-center">
+        <p className="text-gray-500 text-sm">Upload an image</p>
+        <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
+      </label>
+      <input
+        id="file-input"
+        type="file"
+        accept="image/jpeg,image/png,image/gif"
+        onChange={handleImageUpload}
+        className="hidden"
+        required
+      />
+    </div>
+  </div>
+</div>
+
           </div>
 
           {/* Bottom Buttons */}

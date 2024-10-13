@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaChevronDown, FaUpload } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -192,7 +191,6 @@ const EditProduct = () => {
               )}
               <div className="text-center flex-1">
                 <label htmlFor="file-input" className="cursor-pointer flex flex-col items-center">
-                  <FaUpload className="mx-auto w-8 h-8 text-gray-400" />
                   <p className="text-xs text-gray-500 mt-1">Upload Maximum allowed file size is 10MB</p>
                 </label>
                 <input

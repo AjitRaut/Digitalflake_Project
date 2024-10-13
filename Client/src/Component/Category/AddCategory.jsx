@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -44,7 +44,6 @@ const AddCategory = () => {
       toast.success("Category added successfully!");
       navigate("/category");
 
-
       setCategoryName("");
       setImage(null);
       setImageFile(null);
@@ -57,7 +56,7 @@ const AddCategory = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-      <div className="bg-white lg:min-h-[85vh] md:min-h-screen p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
+        <div className="bg-white lg:min-h-[85vh] md:min-h-screen p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
           <h2 className="text-xl md:text-2xl font-semibold mb-8">
             Add Category
           </h2>
@@ -84,20 +83,6 @@ const AddCategory = () => {
               </label>
               <label htmlFor="file-input" className="cursor-pointer">
                 <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
-                  <svg
-                    className="w-12 h-12 text-gray-400 mb-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 16v-1a4 4 0 014-4h1m4 0h1a4 4 0 014 4v1m-4-5l-4-4m0 0l-4 4m4-4v12"
-                    />
-                  </svg>
                   <p className="text-gray-500 text-sm">Upload an image</p>
                   <p className="text-gray-400 text-xs mt-1">
                     Maximum size: 10MB

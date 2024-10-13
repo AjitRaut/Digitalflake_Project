@@ -7,6 +7,7 @@ const EditSubcategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [subcategoryName, setSubcategoryName] = useState("");
+  const [status, setStatus] = useState("active");
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -22,8 +23,9 @@ const EditSubcategory = () => {
         setSubcategoryName(data.subcatname);
         setImage(data.image);
         setImageFile(null); // Reset image file
-        setSelectedCategory(data.categoryId);
+        setSelectedCategory(data.categoryName);
         setCategoryMongoId(data._id);
+        setStatus(data.status)
       } catch (error) {
         toast.error("Error fetching subcategory details");
       }
@@ -57,16 +59,21 @@ const EditSubcategory = () => {
     const formData = new FormData();
     formData.append("subcatname", subcategoryName);
     formData.append("categoryId", selectedCategory);
+    formData.append("status", status);
+
 
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/subcategories/${categoryMongoId}`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/subcategories/${categoryMongoId}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -87,7 +94,7 @@ const EditSubcategory = () => {
         <h2 className="text-xl font-semibold mb-6 sm:mb-8 text-center md:text-left">
           Edit Subcategory
         </h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Subcategory Name
@@ -121,36 +128,62 @@ const EditSubcategory = () => {
               ))}
             </select>
           </div>
-          <div className="col-span-1 sm:col-span-2">
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
+            <select
+              id="status"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+        </div>
+
+          <div className="col-span-2 sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Upload Image
             </label>
-            <div className="flex flex-col items-center sm:items-start">
-              <label htmlFor="file-input" className="cursor-pointer">
-                <div className="w-40 h-40 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
-                  <p className="text-gray-500 text-sm">Upload an image</p>
-                  <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
-                </div>
-              </label>
-              <input
-                id="file-input"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </div>
-            {image && (
-              <div className="mt-4 flex justify-center sm:justify-start">
+            <div className="border border-dashed border-gray-300 rounded-md p-4 flex flex-col gap-2 md:flex-row items-center sm:items-center">
+              {image ? (
                 <img
                   src={image}
                   alt="Uploaded"
-                  className="w-24 h-24 object-cover rounded border border-gray-300 mt-2"
+                  className="w-28 h-36 object-cover mb-2 sm:mb-0 sm:mr-4"
+                />
+              ) : (
+                <div className="w-28 h-36 bg-gray-200 mb-2 sm:mb-0 flex items-center justify-center">
+                  <span className="text-gray-400">No image</span>
+                </div>
+              )}
+              <div className="text-center flex-1">
+                <label
+                  htmlFor="file-input"
+                  className="cursor-pointer flex flex-col items-center"
+                >
+                  <div className="w-40 h-40 sm:w-48 sm:h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
+                    <p className="text-gray-500 text-sm">Upload an image</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      Maximum size: 10MB
+                    </p>
+                  </div>
+                </label>
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
                 />
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        
         <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
           <Link to="/subcategory">
             <button
@@ -173,4 +206,4 @@ const EditSubcategory = () => {
   );
 };
 
-export default EditSubcategory;
+export default EditSubcategory; 
