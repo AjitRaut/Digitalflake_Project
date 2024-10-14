@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -18,10 +20,13 @@ const Register = () => {
   
       const data = await response.json();
       if (response.ok) {
+        localStorage.setItem('username', `${values.firstName} ${values.lastName}`); // Save username
         localStorage.setItem('isRegistered', 'true');
-        console.log(data);
         navigate('/login');
       } else {
+        if (data.message === "User already exists") {
+          toast.error("User already exists");
+        }
         console.error(data.message);
       }
     } catch (error) {
@@ -30,25 +35,19 @@ const Register = () => {
       setSubmitting(false);
     }
   };
+  
 
   const validationSchema = Yup.object({
-    firstName: Yup.string()
-      .required('First name is required'),
-    lastName: Yup.string()
-      .required('Last name is required'),
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Email is required'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(8, 'Password must be at least 8 characters'),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], 'Passwords must match')
-      .required('Confirm Password is required'),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    email: Yup.string().email('Invalid email format').required('Email is required'),
+    password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Confirm Password is required'),
   });
 
   return (
-    <div className="flex justify-center items-center min-h-[90vh] bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <ToastContainer /> {/* Add ToastContainer for toast notifications */}
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-xl font-normal text-gray-500 text-center mb-4">
           Welcome to Digitalflake admin
@@ -107,7 +106,7 @@ const Register = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-purple-950 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded-md"
+                className="w-full bg-purple-950 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md"
                 disabled={isSubmitting}
               >
                 Register

@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import logo from "../../assets/digitalflakelogo.png";
-import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../App/Authslice";
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast
+import { login as loginAction } from "../../App/Authslice"; // Update this import as per your file structure
+import { FaRegEyeSlash, FaRegEye } from "react-icons/fa"; // Import eye icons
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
   useEffect(() => {
-    const isRegistered = localStorage.getItem("isRegistered");
-    if (!isRegistered) {
-      navigate("/register");
+    if (isLoggedIn) {
+      navigate("/app/home");
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -28,7 +27,9 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
+    if (isLoggedIn) return;
+  
     try {
       const response = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
@@ -37,36 +38,35 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         if (data.token) {
           localStorage.setItem("token", data.token);
-          dispatch(login());
-          navigate("/home");
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("username", `${data.firstName} ${data.lastName}`); // Store username
+          dispatch(loginAction());
+          navigate("/app/home");
         } else {
-          toast.error(data.message || "Login failed. Please try again."); // Show toast for incorrect password
+          toast.error(data.message || "Login failed. Please try again.");
         }
       } else {
-        toast.error(data.message || "Login failed. Please try again."); // Show toast for error
+        toast.error(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      toast.error("Login failed. Please try again."); // Show toast for error
+      toast.error("Login failed. Please try again.");
     }
   };
+  
 
   return (
-    <div className="flex justify-center items-center min-h-[90vh] bg-gray-100">
-      <ToastContainer /> 
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <ToastContainer />
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <div className="flex flex-col items-center">
-          <img src={logo} alt="Digitalflake Logo" className="h-16" />
-          <h2 className="text-xl font-normal text-gray-500 text-center mb-4">
-            Welcome to Digitalflake admin
-          </h2>
-        </div>
-
+        <h2 className="text-xl font-normal text-gray-500 text-center mb-4">
+          Welcome to Digitalflake admin
+        </h2>
         <form onSubmit={handleLogin} className="mt-6">
           <div className="mb-4 relative">
             <label
@@ -111,8 +111,6 @@ const Login = () => {
             </button>
           </div>
 
-          {message && <p className="text-center text-red-600">{message}</p>}
-
           <div className="flex justify-center mb-4">
             <p className="text-sm text-gray-600">Don't have an account? </p>
             <Link
@@ -122,9 +120,10 @@ const Login = () => {
               Sign Up
             </Link>
           </div>
+
           <button
             type="submit"
-            className="w-full bg-purple-950 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded-md"
+            className="w-full bg-purple-950 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md"
           >
             Log In
           </button>
