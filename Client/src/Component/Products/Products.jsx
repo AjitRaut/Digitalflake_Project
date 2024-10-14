@@ -104,7 +104,7 @@ const ProductGrid = () => {
         accessor: "action",
         Cell: ({ row }) => (
           <div>
-            <Link to={`/editproduct/${row.original._id}`}>
+            <Link to={`/app/editproduct/${row.original._id}`}>
               <button className="mr-2 text-gray-500">
                 <FiEdit />
               </button>
@@ -149,7 +149,7 @@ const ProductGrid = () => {
               className="border border-gray-300 w-full md:w-80 p-2 pl-10 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
-          <Link to="/addproduct">
+          <Link to="/app/addproduct">
             <button className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition duration-200 w-full md:w-auto">
               Add New
             </button>

@@ -19,7 +19,8 @@ const AddProduct = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/categories");
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         setCategories(data);
       } catch (error) {
@@ -33,7 +34,9 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/subcategories");
+        const response = await axios.get(
+          "http://localhost:5000/api/subcategories"
+        );
         setSubcategories(response.data);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
@@ -50,7 +53,8 @@ const AddProduct = () => {
     }
 
     const filtered = subcategories.filter(
-      (subcategory) => subcategory.category && subcategory.category._id === selectedCategory
+      (subcategory) =>
+        subcategory.category && subcategory.category._id === selectedCategory
     );
 
     setFilteredSubcategories(filtered);
@@ -80,23 +84,46 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validation: Check if all required fields are filled
+    if (!productName) {
+      toast.error("Product name is required.");
+      return;
+    }
+    if (!selectedCategory) {
+      toast.error("Please select a category.");
+      return;
+    }
+    if (!selectedSubcategory) {
+      toast.error("Please select a subcategory.");
+      return;
+    }
+    if (!imageFile) {
+      toast.error("Please upload an image.");
+      return; // Check for image upload
+    }
+  
+    // If all validations pass, proceed with form submission
     const formData = new FormData();
     formData.append("name", productName);
     formData.append("categoryId", selectedCategory);
     formData.append("subcategoryId", selectedSubcategory);
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
+    formData.append("image", imageFile);
+  
     try {
-      const response = await axios.post("http://localhost:5000/api/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
+      const response = await axios.post(
+        "http://localhost:5000/api/products",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
       toast.success("Product added successfully!");
-      navigate("/products");
+      navigate("/app/products");
+      // Reset form fields
       setProductName("");
       setSelectedCategory("");
       setSelectedSubcategory("");
@@ -107,15 +134,19 @@ const AddProduct = () => {
       toast.error("Error adding product. Please try again.");
     }
   };
-
+  
   return (
     <>
       <form onSubmit={handleSubmit}>
         <div className="bg-white min-h-screen lg:min-h-[85vh] p-4 md:p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-semibold mb-6 md:mb-8">Add Product</h2>
+          <h2 className="text-xl md:text-2xl font-semibold mb-6 md:mb-8">
+            Add Product
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Name
+              </label>
               <input
                 type="text"
                 value={productName}
@@ -126,69 +157,92 @@ const AddProduct = () => {
               />
             </div>
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Category
+              </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
                 required
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  Select a category
+                </option>
                 {categories.map((category) => (
-                  <option key={category._id} value={category._id}>{category.name}</option>
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Subcategory
+              </label>
               <select
                 value={selectedSubcategory}
                 onChange={(e) => setSelectedSubcategory(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
                 required
               >
-                <option value="" disabled>Select a subcategory</option>
+                <option value="" disabled>
+                  Select a subcategory
+                </option>
                 {filteredSubcategories.length > 0 ? (
                   filteredSubcategories.map((subcategory) => (
-                    <option key={subcategory._id} value={subcategory._id}>{subcategory.subcatname}</option>
+                    <option key={subcategory._id} value={subcategory._id}>
+                      {subcategory.subcatname}
+                    </option>
                   ))
                 ) : (
-                  <option disabled>No subcategories available for the selected category</option>
+                  <option disabled>
+                    No subcategories available for the selected category
+                  </option>
                 )}
               </select>
             </div>
             <div className="col-span-1 md:col-span-2">
-  <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
-  <div className="border border-dashed border-gray-300 rounded-md p-4 flex flex-col md:flex-row items-center">
-    {imagePreview ? (
-      <img src={imagePreview} alt="Uploaded" className="w-24 h-28 object-cover mb-2 md:mb-0 md:mr-4" />
-    ) : (
-      <div className="w-24 h-28 bg-gray-200 mb-2 md:mb-0 md:mr-4 flex items-center justify-center">
-        <span className="text-gray-400">No image</span>
-      </div>
-    )}
-    <div className="text-center flex-1">
-      <label htmlFor="file-input" className="cursor-pointer flex flex-col items-center">
-        <p className="text-gray-500 text-sm">Upload an image</p>
-        <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
-      </label>
-      <input
-        id="file-input"
-        type="file"
-        accept="image/jpeg,image/png,image/gif"
-        onChange={handleImageUpload}
-        className="hidden"
-        required
-      />
-    </div>
-  </div>
-</div>
-
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Upload Image
+              </label>
+              <div className="border border-dashed border-gray-300 rounded-md p-4 flex flex-col md:flex-row items-center">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Uploaded"
+                    className="w-24 h-28 object-cover mb-2 md:mb-0 md:mr-4"
+                  />
+                ) : (
+                  <div className="w-24 h-28 bg-gray-200 mb-2 md:mb-0 md:mr-4 flex items-center justify-center">
+                    <span className="text-gray-400">No image</span>
+                  </div>
+                )}
+                <div className="text-center flex-1">
+                  <label
+                    htmlFor="file-input"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <p className="text-gray-500 text-sm">Upload an image</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      Maximum size: 10MB
+                    </p>
+                  </label>
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Bottom Buttons */}
           <div className="flex flex-col md:flex-row justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4 sticky bottom-0 bg-white px-6">
-            <Link to="/products" className="w-full md:w-auto">
+            <Link to="/app/products" className="w-full md:w-auto">
               <button
                 type="button"
                 className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 w-full"

@@ -100,7 +100,7 @@ const EditProduct = () => {
         throw new Error(errorData.message || "Failed to update product");
       }
       toast.success("Product updated successfully!");
-      navigate("/products");
+      navigate("/app/products");
     } catch (error) {
       toast.error(error.message || "Error updating product. Please try again.");
     }
@@ -108,7 +108,7 @@ const EditProduct = () => {
 
   return (
     <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm max-w-4xl mx-auto mt-4 md:mt-10 mb-20">
-      <h1 className="text-xl font-semibold mb-4 md:mb-6 text-center">Edit Product</h1>
+      <h1 className="text-xl font-semibold mb-4 md:mb-6 text-left">Edit Product</h1>
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -208,7 +208,7 @@ const EditProduct = () => {
         <div className="flex justify-end mt-6 md:mt-8">
           <button
             type="button"
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/app/products")}
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
           >
             Cancel
