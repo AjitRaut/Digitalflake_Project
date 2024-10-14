@@ -2,12 +2,11 @@ import React from "react";
 import {
   createBrowserRouter,
   Navigate,
+  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./App/store";
-import Navbar from "./Component/Home/Navbar";
-import MainContent from "./Component/Home/Maincontent";
 import Login from "./Component/Auth/Login.jsx";
 import Register from "./Component/Auth/Register.jsx";
 import CategoryGrid from "./Component/Category/CategoryGrid.jsx";
@@ -15,11 +14,12 @@ import AddCategory from "./Component/Category/AddCategory.jsx";
 import Products from "./Component/Products/Products.jsx";
 import EditCategory from "./Component/Category/EditCategory.jsx";
 import SubCategoryGrid from "./Component/Subcategory/SubCategoryGrid.jsx";
-import EditSubCategory from "./Component/Subcategory/Editsubcategory.jsx";
+import EditSubCategory from "./Component/Subcategory/EditSubCategory.jsx";
 import AddSubCategory from "./Component/Subcategory/AddSubCategory.jsx";
 import AddProduct from "./Component/Products/AddProduct.jsx";
 import EditProduct from "./Component/Products/EditProduct.jsx";
 import Home from "./Component/Home/Home.jsx";
+import AppLayout from "./Component/Home/AppLayout.jsx";
 
 const AppRouter = createBrowserRouter([
   {
@@ -27,25 +27,32 @@ const AppRouter = createBrowserRouter([
     element: <Navigate to="/login" />,
   },
   {
-    path: "/",
+    path: "/login",
     element: (
       <Provider store={store}>
-        <Navbar />
-        <MainContent />
+        <Login />
+      </Provider>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <Provider store={store}>
+        <Register />
+      </Provider>
+    ),
+  },
+  {
+    path: "/app",
+    element: (
+      <Provider store={store}>
+        <AppLayout/>
       </Provider>
     ),
     children: [
       {
         path: "home",
         element: <Home />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
       },
       {
         path: "category",
