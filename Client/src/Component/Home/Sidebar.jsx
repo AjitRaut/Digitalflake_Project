@@ -17,7 +17,7 @@ function Sidebar() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed bottom-0 w-full lg:w-52 lg:top-16 lg:left-0 bg-gray-100 p-6 z-40 transition-transform transform
+        className={`fixed bottom-0 w-full lg:w-[200px] lg:top-16 lg:left-0 bg-gray-100 p-[17px] z-40 transition-transform transform
           lg:translate-x-0 lg:translate-y-0 lg:block
         `}
       >
@@ -25,7 +25,7 @@ function Sidebar() {
           <ul className="lg:block flex justify-around">
             <li className="mb-6 flex items-center lg:mb-4">
               <Link
-                to="/home"
+                to="/app/home"
                 className={`flex items-center text-lg w-full justify-center lg:justify-start ${
                   active === "home" ? "bg-yellow-200" : ""
                 }`}
@@ -38,7 +38,7 @@ function Sidebar() {
             </li>
             <li className="mb-6 flex items-center lg:mb-4">
               <Link
-                to="/category"
+                to="/app/category"
                 className={`flex items-center text-lg w-full justify-center lg:justify-start ${
                   active === "category" ? "bg-yellow-200" : ""
                 }`}
@@ -55,7 +55,7 @@ function Sidebar() {
             </li>
             <li className="mb-6 flex items-center lg:mb-4">
               <Link
-                to="/subcategory"
+                to="/app/subcategory"
                 className={`flex items-center text-lg w-full justify-center lg:justify-start ${
                   active === "subcategory" ? "bg-yellow-200" : ""
                 }`}
@@ -68,7 +68,7 @@ function Sidebar() {
             </li>
             <li className="mb-6 flex items-center lg:mb-4">
               <Link
-                to="/products"
+                to="/app/products"
                 className={`flex items-center text-lg w-full justify-center lg:justify-start ${
                   active === "products" ? "bg-yellow-200" : ""
                 }`}

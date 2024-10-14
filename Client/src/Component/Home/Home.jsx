@@ -4,7 +4,7 @@ import dflakelogo from "../../assets/digitalflakelogo.png";
 const Home = () => {
   return (
     <>
-      <div className="flex justify-center items-center h-[85vh] p-4">
+      <div className="flex justify-center items-center h-[90vh] p-4">
         <div className="text-center p-6 sm:p-10">
           <img
             src={dflakelogo}
