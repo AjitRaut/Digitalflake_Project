@@ -85,7 +85,7 @@ const EditCategory = () => {
       }
 
       toast.success("Category updated successfully!");
-      navigate("/category");
+      navigate("/app/category");
     } catch (error) {
       console.error("Error updating category:", error);
       toast.error(
@@ -164,7 +164,7 @@ const EditCategory = () => {
           <div className="flex flex-col md:flex-row justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4 sticky bottom-0 bg-white py-4 px-6">
             <button
               type="button"
-              onClick={() => navigate("/category")}
+              onClick={() => navigate("/app/category")}
               className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 w-full md:w-auto"
             >
               Cancel

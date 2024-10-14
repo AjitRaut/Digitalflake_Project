@@ -18,6 +18,15 @@ const AddCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation
+    if (!categoryName  ) {
+      toast.error("Please fill out the field.");
+      return;
+    }
+    if(!imageFile){
+      toast.error("Please upload an image.")
+    }
+
     const formData = new FormData();
     formData.append("name", categoryName);
     if (imageFile) {
@@ -42,7 +51,7 @@ const AddCategory = () => {
 
       const data = await response.json();
       toast.success("Category added successfully!");
-      navigate("/category");
+      navigate("/app/category");
 
       setCategoryName("");
       setImage(null);
@@ -112,7 +121,7 @@ const AddCategory = () => {
 
           {/* Buttons */}
           <div className="flex flex-col md:flex-row justify-end mt-8 space-y-4 md:space-y-0 md:space-x-4 sticky bottom-0 bg-white py-4 px-6 ">
-            <Link to={"/category"}>
+            <Link to={"/app/category"}>
               <button
                 type="button"
                 className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 w-full md:w-auto"
@@ -131,19 +140,7 @@ const AddCategory = () => {
         </div>
       </form>
 
-      {/* Responsive Toastify Container */}
       <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        toastClassName="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto"
-        bodyClassName="text-sm sm:text-base"
       />
     </>
   );
