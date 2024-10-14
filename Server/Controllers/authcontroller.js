@@ -32,6 +32,7 @@ const register = async (req, res) => {
 };
 
 // Login user
+// Login user
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -42,10 +43,16 @@ const login = async (req, res) => {
     if (!isPasswordValid) return res.status(400).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token });
+    // Include firstName and lastName in the response
+    res.status(200).json({
+      token,
+      firstName: user.firstName,
+      lastName: user.lastName
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 module.exports = { register, login };
