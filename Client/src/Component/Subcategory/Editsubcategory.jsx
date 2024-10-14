@@ -82,7 +82,7 @@ const EditSubcategory = () => {
       }
 
       toast.success("Subcategory updated successfully!");
-      navigate("/subcategory");
+      navigate("/app/subcategory");
     } catch (error) {
       toast.error("Error updating subcategory. Please try again.");
     }
@@ -129,7 +129,7 @@ const EditSubcategory = () => {
             </select>
           </div>
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
               Status
             </label>
             <select
@@ -185,7 +185,7 @@ const EditSubcategory = () => {
           </div>
         
         <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
-          <Link to="/subcategory">
+          <Link to="/app/subcategory">
             <button
               type="button"
               className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-full text-gray-600"

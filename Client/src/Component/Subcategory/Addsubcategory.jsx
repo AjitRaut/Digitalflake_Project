@@ -26,12 +26,29 @@ const AddSubcategory = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(URL.createObjectURL(file));
-    setImageFile(file);
+    if (file) {
+      setImage(URL.createObjectURL(file));
+      setImageFile(file);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation: Check if all required fields are filled
+    if (!subcategoryName) {
+      toast.error("Subcategory name is required.");
+      return;
+    }
+    if (!selectedCategory) {
+      toast.error("Please select a category.");
+      return;
+    }
+    if (!imageFile) {
+      toast.error("Please upload an image.");
+      return; // Check for image upload
+    }
+
     const formData = new FormData();
     formData.append("subcatname", subcategoryName);
     formData.append("categoryId", selectedCategory);
@@ -148,14 +165,13 @@ const AddSubcategory = () => {
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
-                  required
                 />
               </div>
             </div>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
-          <Link to="/subcategory">
+          <Link to="/app/subcategory">
             <button
               type="button"
               className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-full text-gray-600"
