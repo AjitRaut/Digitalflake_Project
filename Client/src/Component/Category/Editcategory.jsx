@@ -62,15 +62,16 @@ const EditCategory = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
     formData.append("name", categoryName);
     formData.append("status", status);
     if (imageFile) {
       formData.append("image", imageFile);
     }
-
+  
     try {
+      // Make the PUT request to update the category
       const response = await fetch(
         `http://localhost:5000/api/categories/${id}`,
         {
@@ -78,21 +79,31 @@ const EditCategory = () => {
           body: formData,
         }
       );
-
+  
+      // Check if the response is not ok
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update category");
+  
+        // Check for specific error (category name already exists)
+        if (errorData.message === "Category name already exists") {
+          toast.error("Category name already exists. Please choose a different name.");
+        } else {
+          throw new Error(errorData.message || "Failed to update category");
+        }
+  
+        return; // Stop execution if there's an error
       }
-
+  
+      // If no error, show success and navigate
       toast.success("Category updated successfully!");
       navigate("/app/category");
     } catch (error) {
+      // Handle any unexpected error
       console.error("Error updating category:", error);
-      toast.error(
-        error.message || "Error updating category. Please try again."
-      );
+      toast.error(error.message || "Error updating category. Please try again.");
     }
   };
+  
 
   return (
     <>
@@ -182,17 +193,6 @@ const EditCategory = () => {
 
       {/* Responsive Toastify Container */}
       <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        toastClassName="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto"
-        bodyClassName="text-sm sm:text-base"
       />
     </>
   );
