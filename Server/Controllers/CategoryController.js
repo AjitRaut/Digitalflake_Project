@@ -93,25 +93,37 @@ const updateCategory = async (req, res) => {
     // Prepare the update data
     let updateData = {};
 
-    // Ensure the name and status are present before updating
+    // Ensure the name is provided and check for uniqueness
     if (name) {
-      updateData.name = capitalizeFirstLetter(name.trim()); // Capitalize and trim the name
-    }
-    if (status) {
-      updateData.status = status; // Update status
+      // Capitalize and trim the name before checking
+      const trimmedName = capitalizeFirstLetter(name.trim());
+      
+      // Check if a category with the same name (excluding the current category) exists
+      const existingCategory = await Category.findOne({ name: trimmedName, _id: { $ne: categoryId } });
+
+      if (existingCategory) {
+        // If the category with the new name already exists, return an error response
+        return res.status(400).json({ message: "Category name already exists" });
+      }
+
+      updateData.name = trimmedName; // Set the new name for updating
     }
 
-    // Check if an image file is being uploaded
+    // Update the status if provided
+    if (status) {
+      updateData.status = status;
+    }
+
+    // Handle image upload if a file is present
     if (req.file) {
-      // Set the image path if a new file is uploaded
       updateData.image = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     // Perform the update operation
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
-      { $set: updateData }, // Use $set to update only the provided fields
-      { new: true, runValidators: true } // Return the updated document and validate
+      { $set: updateData }, // Only update provided fields
+      { new: true, runValidators: true } // Return updated document and validate the input
     );
 
     // Check if the category was found and updated
@@ -119,15 +131,17 @@ const updateCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
+    // Respond with success
     res.status(200).json({
       message: "Category updated successfully!",
       category: updatedCategory,
     });
   } catch (error) {
+    // Log the error and respond with server error
+    console.error("Error updating category:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 const deleteCategory = async (req, res) => {
   try {
