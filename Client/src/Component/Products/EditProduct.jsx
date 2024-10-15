@@ -81,31 +81,53 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", productName);
-    formData.append("subcategoryId", subcategoryId);
-    formData.append("categoryId", categoryId);
-    formData.append("status", status);
-    if (imageFile) {
-      formData.append("image", imageFile);
+  
+    // Validation: Ensure product name is provided
+    if (!productName) {
+      toast.error("Product name is required.");
+      return;
     }
-
+  
+    // Fetch existing products to check for duplicates
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await axios.get("http://localhost:5000/api/products");
+      const productNames = response.data.map(product => product.name);
+  
+      // Exclude the current product's name to allow the user to keep it unchanged
+      const existingNames = productNames.filter(name => name !== productName);
+  
+      if (existingNames.includes(productName)) {
+        toast.error("Product name already exists.");
+        return;
+      }
+  
+      // Proceed with updating the product
+      const formData = new FormData();
+      formData.append("name", productName);
+      formData.append("subcategoryId", subcategoryId);
+      formData.append("categoryId", categoryId);
+      formData.append("status", status);
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+  
+      const updateResponse = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "PUT",
         body: formData,
       });
-      if (!response.ok) {
-        const errorData = await response.json();
+  
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
         throw new Error(errorData.message || "Failed to update product");
       }
+  
       toast.success("Product updated successfully!");
       navigate("/app/products");
     } catch (error) {
       toast.error(error.message || "Error updating product. Please try again.");
     }
   };
-
+  
   return (
     <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm max-w-4xl mx-auto mt-4 md:mt-10 mb-20">
       <h1 className="text-xl font-semibold mb-4 md:mb-6 text-left">Edit Product</h1>

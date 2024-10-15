@@ -103,15 +103,24 @@ const AddProduct = () => {
       return; // Check for image upload
     }
   
-    // If all validations pass, proceed with form submission
-    const formData = new FormData();
-    formData.append("name", productName);
-    formData.append("categoryId", selectedCategory);
-    formData.append("subcategoryId", selectedSubcategory);
-    formData.append("image", imageFile);
-  
+    // Fetch existing products to check for duplicates
     try {
-      const response = await axios.post(
+      const response = await axios.get("http://localhost:5000/api/products");
+      const productNames = response.data.map(product => product.name);
+  
+      if (productNames.includes(productName)) {
+        toast.error("Product name already exists.");
+        return;
+      }
+  
+      // If all validations pass, proceed with form submission
+      const formData = new FormData();
+      formData.append("name", productName);
+      formData.append("categoryId", selectedCategory);
+      formData.append("subcategoryId", selectedSubcategory);
+      formData.append("image", imageFile);
+  
+      const addProductResponse = await axios.post(
         "http://localhost:5000/api/products",
         formData,
         {
@@ -134,6 +143,7 @@ const AddProduct = () => {
       toast.error("Error adding product. Please try again.");
     }
   };
+  
   
   return (
     <>
