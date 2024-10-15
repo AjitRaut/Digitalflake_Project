@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../App/Authslice";
-import { FaBars } from "react-icons/fa"; // Icon for mobile menu
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false); // State to track mobile menu
@@ -21,11 +20,7 @@ const Navbar = () => {
 
   const isLoggedIn = !!localStorage.getItem("token");
   const username = localStorage.getItem("username");
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
+ 
   return (
     <nav className="bg-customPurple p-2 sm:p-4 text-white flex justify-between items-center fixed top-0 left-0 w-full z-50">
       {/* Logo Section */}
@@ -39,15 +34,8 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Mobile Hamburger Menu */}
-      <div className="lg:hidden">
-        <button onClick={toggleMenu}>
-          <FaBars className="text-white text-2xl" />
-        </button>
-      </div>
-
       {/* Links Section */}
-      <div className={`lg:flex items-center space-x-4 ${menuOpen ? "block" : "hidden"} lg:block`}>
+      <div className="items-center space-x-4 ">
         {isLoggedIn ? (
           <>
             {/* Username Display */}
