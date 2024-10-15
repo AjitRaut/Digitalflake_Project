@@ -53,7 +53,7 @@ const SubcategoryGrid = () => {
   }, [subcategories, searchTerm]);
 
   const getCategoryName = (subcategory) => {
-    return subcategory.categoryName || "Unknown";
+    return subcategory.categoryName|| "Unknown";
   };
 
   const data = useMemo(() => {

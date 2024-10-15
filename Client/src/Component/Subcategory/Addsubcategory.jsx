@@ -36,7 +36,6 @@ const AddSubcategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation: Check if all required fields are filled
     if (!subcategoryName) {
       toast.error("Subcategory name is required.");
       return;
@@ -47,20 +46,12 @@ const AddSubcategory = () => {
     }
     if (!imageFile) {
       toast.error("Please upload an image.");
-      return; // Check for image upload
+      return;
     }
 
     const formData = new FormData();
     formData.append("subcatname", subcategoryName);
-    formData.append("categoryId", selectedCategory);
-
-    const selectedCategoryObject = categories.find(
-      (cat) => cat._id === selectedCategory
-    );
-    if (selectedCategoryObject) {
-      formData.append("categoryName", selectedCategoryObject.name);
-    }
-
+    formData.append("categoryName", categories.find(cat => cat._id === selectedCategory)?.name);
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -88,7 +79,7 @@ const AddSubcategory = () => {
       setImageFile(null);
       setSelectedCategory("");
       navigate("/app/subcategory");
-      
+
     } catch (error) {
       toast.error("Error adding subcategory. Please try again.");
     }
