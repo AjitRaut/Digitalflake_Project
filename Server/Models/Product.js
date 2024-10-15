@@ -1,31 +1,29 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  name: {
+  productName: {
     type: String,
     required: true,
   },
-  categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category", // Reference to the Category model
-    required: false,
+  categoryName: {
+    type: String,
+    required: true,
   },
-  subcategoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subcategory", // Reference to the Subcategory model
-    required: false,
+  subcategoryName: {
+    type: String,
+    required: true,
   },
   image: {
     type: String,
-    required: false, // Optional if the image is taken from the category
+    required: false,
   },
   status: {
     type: String,
-    enum: ["active", "inactive"], // Restricting to specific values
-    default: "active", // Default value
+    enum: ["active", "inactive"],
+    default: "active",
   },
 }, {
-  timestamps: true, // Automatically create createdAt and updatedAt fields
+  timestamps: true,
 });
 
 const Product = mongoose.model("Product", productSchema);
