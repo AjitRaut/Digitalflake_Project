@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddSubcategory = () => {
   const [subcategoryName, setSubcategoryName] = useState("");
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -86,6 +87,8 @@ const AddSubcategory = () => {
       setImage(null);
       setImageFile(null);
       setSelectedCategory("");
+      navigate("/app/subcategory");
+      
     } catch (error) {
       toast.error("Error adding subcategory. Please try again.");
     }
