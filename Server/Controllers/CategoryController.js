@@ -1,6 +1,5 @@
 const Category = require("../Models/Category");
 const Counter = require("../Models/counter");
-const path = require("path");
 const mongoose = require("mongoose");
 
 const capitalizeFirstLetter = (string) => {

@@ -1,11 +1,14 @@
 const Product = require("../Models/Product");
-const multer = require("multer");
-const path = require("path");
+
+// Helper function to capitalize the first letter
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 // Create a new product
 const createProduct = async (req, res) => {
   try {
-    const { name, categoryId, subcategoryId } = req.body;
+    let { name, categoryId, subcategoryId } = req.body;
 
     if (!categoryId || !subcategoryId) {
       return res.status(400).json({ message: "Category ID and Subcategory ID are required." });
@@ -14,6 +17,15 @@ const createProduct = async (req, res) => {
     // Check if an image file has been uploaded
     if (!req.file) {
       return res.status(400).json({ message: "File upload failed. Please provide an image." });
+    }
+
+    // Capitalize the first letter of the name
+    name = capitalizeFirstLetter(name);
+
+    // Check if the product name already exists
+    const existingProduct = await Product.findOne({ name });
+    if (existingProduct) {
+      return res.status(400).json({ message: "Product name already exists." });
     }
 
     // Create a new product instance with image path
@@ -34,7 +46,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Get products with optional filters for category and subcategory
+// Get product by ID
 const getProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('categoryId subcategoryId');
@@ -57,15 +69,27 @@ const getProducts = async (req, res) => {
   }
 };
 
+// Update product
 const updateProduct = async (req, res) => {
   try {
-    const { name, subcategoryId, categoryId, status } = req.body;
-    const updateData = { name, subcategoryId, categoryId, status };
+    let { name, subcategoryId, categoryId, status } = req.body;
+    const updateData = { subcategoryId, categoryId, status };
+
+    // Capitalize the first letter of the name if it's being updated
+    if (name) {
+      name = capitalizeFirstLetter(name);
+      // Check if the product name already exists (excluding the current product)
+      const existingProduct = await Product.findOne({ name, _id: { $ne: req.params.id } });
+      if (existingProduct) {
+        return res.status(400).json({ message: "Product name already exists." });
+      }
+      updateData.name = name;
+    }
 
     // Check if an image file is being uploaded
     if (req.file) {
       // Set the image path if a new file is uploaded
-      updateData.image = `http://localhost:5000/uploads/${req.file.filename}`; // Set the image URL
+      updateData.image = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true }).populate('categoryId subcategoryId');
@@ -76,12 +100,11 @@ const updateProduct = async (req, res) => {
 
     res.json(product); // Return the updated product with populated fields
   } catch (error) {
-    console.error("Error updating product:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
+// Delete product
 const deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;
@@ -91,9 +114,7 @@ const deleteProduct = async (req, res) => {
     }
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting product", error: error.message });
+    res.status(500).json({ message: "Error deleting product", error: error.message });
   }
 };
 

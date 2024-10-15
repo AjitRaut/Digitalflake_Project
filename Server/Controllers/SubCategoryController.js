@@ -1,6 +1,5 @@
 const Subcategory = require("../Models/Subcategory");
 const Counter = require("../Models/counter"); // Assuming you have a counter model
-const path = require("path");
 const mongoose = require("mongoose");
 
 // Utility function to capitalize the first letter
