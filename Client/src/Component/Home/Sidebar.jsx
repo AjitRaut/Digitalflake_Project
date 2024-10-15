@@ -22,7 +22,7 @@ function Sidebar() {
         `}
       >
         <nav className="lg:flex lg:flex-col">
-          <ul className="lg:block flex justify-around">
+          <ul className="lg:block md:mt-3 flex justify-around">
             <li className="mb-6 flex items-center lg:mb-4">
               <Link
                 to="/app/home"
