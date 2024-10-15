@@ -50,7 +50,7 @@ const AddProduct = () => {
     }
 
     const filtered = subcategories.filter(
-      (subcategory) => subcategory.category && subcategory.category.name === selectedCategory
+      (subcategory) => subcategory.categoryName === selectedCategory
     );
 
     setFilteredSubcategories(filtered);
@@ -175,7 +175,7 @@ const AddProduct = () => {
                 <option value="" disabled>Select a subcategory</option>
                 {filteredSubcategories.length > 0 ? (
                   filteredSubcategories.map((subcategory) => (
-                    <option key={subcategory._id} value={subcategory.name}>{subcategory.subcatname}</option>
+                    <option key={subcategory._id} value={subcategory.subcatname}>{subcategory.subcatname}</option>
                   ))
                 ) : (
                   <option disabled>No subcategories available for the selected category</option>
