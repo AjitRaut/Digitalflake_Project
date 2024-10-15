@@ -51,12 +51,10 @@ exports.addSubcategory = async (req, res) => {
 
     await newSubcategory.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Subcategory added successfully!",
-        subcategory: newSubcategory,
-      });
+    res.status(201).json({
+      message: "Subcategory added successfully!",
+      subcategory: newSubcategory,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to create subcategory" });
   }
@@ -85,12 +83,15 @@ exports.getSubCategoryById = async (req, res) => {
 
 exports.updateSubCategory = async (req, res) => {
   try {
-    const { subcatname, status, categoryName } = req.body;
+    let { subcatname, status, categoryName } = req.body;
     const subcategoryId = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(subcategoryId)) {
       return res.status(400).json({ message: "Invalid subcategory ID" });
     }
+
+    // Capitalize the first letter of the subcategory name
+    subcatname = capitalizeFirstLetter(subcatname.trim());
 
     // Check if subcategory name already exists (excluding current subcategory)
     const existingSubcategory = await Subcategory.findOne({
@@ -99,9 +100,7 @@ exports.updateSubCategory = async (req, res) => {
     });
 
     if (existingSubcategory) {
-      return res
-        .status(400)
-        .json({ message: "Subcategory name already exists" });
+      return res.status(400).json({ message: "Subcategory name already exists" });
     }
 
     // Prepare update data
