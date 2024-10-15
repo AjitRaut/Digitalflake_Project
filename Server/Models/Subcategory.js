@@ -5,14 +5,9 @@ const subcategorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
-  },
   categoryName: {
     type: String,
-    required: false, // Make this required if you want to enforce it
+    required: true,
   },
   image: {
     type: String,
@@ -20,11 +15,11 @@ const subcategorySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["active", "inactive"], // Restricting to specific values
-    default: "active", // Default value
+    enum: ["active", "inactive"],
+    default: "active",
   },
 }, {
-  timestamps: true, // Automatically create createdAt and updatedAt fields
+  timestamps: true,
 });
 
 const Subcategory = mongoose.model("Subcategory", subcategorySchema);
