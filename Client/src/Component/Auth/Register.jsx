@@ -76,12 +76,19 @@ const Register = () => {
         >
           {({ isSubmitting }) => (
             <Form className="mt-6">
-              <div className="mb-4">
+              <div className="mb-4 relative">
+                <label
+                  className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
+                  htmlFor="firstName"
+                >
+                  First Name
+                </label>
                 <Field
                   type="text"
                   name="firstName"
-                  placeholder="First Name"
-                  className="w-full p-2 border rounded"
+                  id="firstName"
+                  placeholder="Enter your first name"
+                  className="w-full px-4 pt-4 pb-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <ErrorMessage
                   name="firstName"
@@ -89,12 +96,19 @@ const Register = () => {
                   className="text-red-600 text-sm"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 relative">
+                <label
+                  className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
+                  htmlFor="lastName"
+                >
+                  Last Name
+                </label>
                 <Field
                   type="text"
                   name="lastName"
-                  placeholder="Last Name"
-                  className="w-full p-2 border rounded"
+                  id="lastName"
+                  placeholder="Enter your last name"
+                  className="w-full px-4 pt-4 pb-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <ErrorMessage
                   name="lastName"
@@ -102,12 +116,19 @@ const Register = () => {
                   className="text-red-600 text-sm"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 relative">
+                <label
+                  className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
                 <Field
                   type="email"
                   name="email"
-                  placeholder="Email"
-                  className="w-full p-2 border rounded"
+                  id="email"
+                  placeholder="Enter your email"
+                  className="w-full px-4 pt-4 pb-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <ErrorMessage
                   name="email"
@@ -116,16 +137,23 @@ const Register = () => {
                 />
               </div>
               <div className="mb-4 relative">
+                <label
+                  className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
                 <Field
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Password"
-                  className="w-full p-2 border rounded pr-10"
+                  id="password"
+                  placeholder="Enter your password"
+                  className="w-full px-4 pt-4 pb-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-600"
+                  className="absolute right-3 top-5 text-gray-600"
                 >
                   {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
@@ -136,16 +164,23 @@ const Register = () => {
                 />
               </div>
               <div className="mb-6 relative">
+                <label
+                  className="absolute -top-3 left-3 bg-white px-1 text-gray-700 text-sm"
+                  htmlFor="confirmPassword"
+                >
+                  Confirm Password
+                </label>
                 <Field
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
-                  placeholder="Confirm Password"
-                  className="w-full p-2 border rounded pr-10"
+                  id="confirmPassword"
+                  placeholder="Confirm your password"
+                  className="w-full px-4 pt-4 pb-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-3 text-gray-600"
+                  className="absolute right-3 top-5 text-gray-600"
                 >
                   {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
