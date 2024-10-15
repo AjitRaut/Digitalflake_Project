@@ -8,8 +8,8 @@ const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [productName, setProductName] = useState("");
-  const [subcategoryId, setSubcategoryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [subcategoryName, setSubcategoryName] = useState("");
+  const [categoryName, setcategoryName] = useState("");
   const [status, setStatus] = useState("active");
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -24,13 +24,12 @@ const EditProduct = () => {
           throw new Error("Failed to fetch product");
         }
         const data = await response.json();
-        setProductName(data.name);
-        setSubcategoryId(data.subcategoryId._id);
-        setCategoryId(data.categoryId._id);
+        setProductName(data.productName);
+        setSubcategoryName(data.subcategoryName);
+        setcategoryName(data.categoryName);
         setStatus(data.status);
         setImage(data.image);
       } catch (error) {
-        console.error("Error fetching product:", error);
         toast.error("Error fetching product details");
       }
     };
@@ -40,7 +39,6 @@ const EditProduct = () => {
         const response = await axios.get("http://localhost:5000/api/categories");
         setCategories(response.data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
       }
     };
 
@@ -49,7 +47,6 @@ const EditProduct = () => {
         const response = await axios.get(`http://localhost:5000/api/subcategories`);
         setSubcategories(response.data);
       } catch (error) {
-        console.error("Error fetching subcategories:", error);
       }
     };
 
@@ -91,7 +88,7 @@ const EditProduct = () => {
     // Fetch existing products to check for duplicates
     try {
       const response = await axios.get("http://localhost:5000/api/products");
-      const productNames = response.data.map(product => product.name);
+      const productNames = response.data.map(product => product.productName);
   
       // Exclude the current product's name to allow the user to keep it unchanged
       const existingNames = productNames.filter(name => name !== productName);
@@ -103,9 +100,9 @@ const EditProduct = () => {
   
       // Proceed with updating the product
       const formData = new FormData();
-      formData.append("name", productName);
-      formData.append("subcategoryId", subcategoryId);
-      formData.append("categoryId", categoryId);
+      formData.append("productName", productName);
+      formData.append("subcategoryName", subcategoryName);
+      formData.append("categoryName", categoryName);
       formData.append("status", status);
       if (imageFile) {
         formData.append("image", imageFile);
@@ -153,13 +150,13 @@ const EditProduct = () => {
             <select
               id="subcategory"
               className="w-full p-2 border border-gray-300 rounded-md"
-              value={subcategoryId}
-              onChange={(e) => setSubcategoryId(e.target.value)}
+              value={subcategoryName}
+              onChange={(e) => setSubcategoryName(e.target.value)}
               required
             >
               <option value="">Select subcategory</option>
               {subcategories.map((subcat) => (
-                <option key={subcat._id} value={subcat._id}>
+                <option key={subcat._id} value={subcat.subcatname}>
                   {subcat.subcatname}
                 </option>
               ))}
@@ -172,13 +169,13 @@ const EditProduct = () => {
             <select
               id="category"
               className="w-full p-2 border border-gray-300 rounded-md"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              value={categoryName}
+              onChange={(e) => setcategoryName(e.target.value)}
               required
             >
               <option value="">Select category</option>
               {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>
+                <option key={cat._id} value={cat.name}>
                   {cat.name}
                 </option>
               ))}

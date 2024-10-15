@@ -34,10 +34,12 @@ const ProductGrid = () => {
   };
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    return products.filter((product) => 
+      product.productName && 
+      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [products, searchTerm]);
+  
 
   const handleDelete = (id) => {
     setDeleteId(id);
@@ -69,15 +71,17 @@ const ProductGrid = () => {
       },
       {
         Header: "Product Name",
-        accessor: "name",
+        accessor: "productName",
       },
       {
         Header: "Category Name",
-        accessor: "categoryId.name",
+        accessor: "categoryName",
+        Cell: ({ value }) => value || "Unknown",
       },
       {
         Header: "SubCategory Name",
-        accessor: "subcategoryId.subcatname",
+        accessor: "subcategoryName" ,
+        Cell: ({ value }) => value || "Unknown",
       },
       {
         Header: "Image",
