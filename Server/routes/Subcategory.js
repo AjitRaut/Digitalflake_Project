@@ -1,31 +1,16 @@
 // routes/subcategoryRoutes.js
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
+const upload = require("../Middleware/multer"); // Ensure this points to your multer configuration
 const subcategoryController = require("../Controllers/SubCategoryController");
-
 
 // Create an Express router
 const router = express.Router();
 
-// Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "./uploads";
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
-
 // Define routes for subcategories
-router.post("/", upload.single("image"), subcategoryController.addSubcategory);
+router.post("/", upload.single("image"), subcategoryController.addSubcategory); // Ensure the field name matches
 router.get("/", subcategoryController.getSubcategories);
 router.get("/:id", subcategoryController.getSubCategoryById);
-router.put("/:id", upload.single("image"), subcategoryController.updateSubCategory);
+router.put("/:id", upload.single("image"), subcategoryController.updateSubCategory); // Ensure the field name matches
 router.delete("/:id", subcategoryController.deleteSubcategory);
 
 module.exports = router;
