@@ -1,6 +1,7 @@
 const Subcategory = require("../Models/Subcategory");
 const Counter = require("../Models/counter");
 const mongoose = require("mongoose");
+const cloudinary = require("../Config/cloudinary")
 
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -12,6 +13,7 @@ exports.addSubcategory = async (req, res) => {
 
     subcatname = capitalizeFirstLetter(subcatname.trim());
 
+    // Check for existing subcategory
     const existingSubcategory = await Subcategory.findOne({
       subcatname: { $regex: new RegExp(`^${subcatname}$`, "i") },
     });
@@ -23,31 +25,47 @@ exports.addSubcategory = async (req, res) => {
       return res.status(400).json({ message: "File upload failed. Please provide an image." });
     }
 
-    const counter = await Counter.findOneAndUpdate(
-      {},
-      { $inc: { subcategorySeq: 1 } },
-      { new: true, upsert: true }
+    // Use cloudinary's upload stream method to upload the image
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: "auto" },
+      async (error, result) => {
+        if (error) {
+          return res.status(500).json({ error: "Image upload failed" });
+        }
+        
+        // Counter logic
+        const counter = await Counter.findOneAndUpdate(
+          {},
+          { $inc: { subcategorySeq: 1 } },
+          { new: true, upsert: true }
+        );
+
+        const newSubcategoryId = counter.subcategorySeq;
+
+        // Create new subcategory with the Cloudinary image URL
+        const newSubcategory = new Subcategory({
+          id: newSubcategoryId,
+          subcatname,
+          categoryName,
+          image: result.secure_url, // Use the URL from Cloudinary
+        });
+
+        await newSubcategory.save();
+
+        res.status(201).json({
+          message: "Subcategory added successfully!",
+          subcategory: newSubcategory,
+        });
+      }
     );
 
-    const newSubcategoryId = counter.subcategorySeq;
-
-    const newSubcategory = new Subcategory({
-      id: newSubcategoryId,
-      subcatname,
-      categoryName,
-      image: `http://localhost:5000/uploads/${req.file.filename}`,
-    });
-
-    await newSubcategory.save();
-
-    res.status(201).json({
-      message: "Subcategory added successfully!",
-      subcategory: newSubcategory,
-    });
+    // End the upload stream with the file buffer
+    uploadStream.end(req.file.buffer);
   } catch (error) {
     res.status(500).json({ error: "Failed to create subcategory" });
   }
 };
+
 
 exports.getSubcategories = async (req, res) => {
   try {
@@ -74,14 +92,16 @@ exports.updateSubCategory = async (req, res) => {
     let { subcatname, status, categoryName } = req.body;
     const subcategoryId = req.params.id;
 
+    // Validate subcategory ID
     if (!mongoose.Types.ObjectId.isValid(subcategoryId)) {
       return res.status(400).json({ message: "Invalid subcategory ID" });
     }
 
     subcatname = capitalizeFirstLetter(subcatname.trim());
 
+    // Check for existing subcategory name conflict
     const existingSubcategory = await Subcategory.findOne({
-      subcatname: subcatname,
+      subcatname,
       _id: { $ne: subcategoryId },
     });
 
@@ -91,25 +111,56 @@ exports.updateSubCategory = async (req, res) => {
 
     let updateData = { subcatname, status, categoryName };
 
+    // Handle image upload if a new file is provided
     if (req.file) {
-      const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
-      updateData.image = imagePath;
+      
+      // Upload new image to Cloudinary
+      const uploadResult = await cloudinary.uploader.upload_stream(
+        { resource_type: "auto" },
+        async (error, result) => {
+          if (error) {
+            return res.status(500).json({ error: "Image upload failed" });
+          }
+          
+          updateData.image = result.secure_url; // Set the image URL from Cloudinary
+
+          // Perform the update after the image is uploaded
+          const updatedSubcategory = await Subcategory.findByIdAndUpdate(
+            subcategoryId,
+            updateData,
+            { new: true }
+          );
+
+          if (!updatedSubcategory) {
+            return res.status(404).json({ message: "Subcategory not found" });
+          }
+
+          res.json({
+            message: "Subcategory updated successfully!",
+            subcategory: updatedSubcategory,
+          });
+        }
+      );
+
+      // End the upload stream with the file buffer
+      uploadResult.end(req.file.buffer);
+    } else {
+      // If no new image is provided, simply update the other fields
+      const updatedSubcategory = await Subcategory.findByIdAndUpdate(
+        subcategoryId,
+        updateData,
+        { new: true }
+      );
+
+      if (!updatedSubcategory) {
+        return res.status(404).json({ message: "Subcategory not found" });
+      }
+
+      res.json({
+        message: "Subcategory updated successfully!",
+        subcategory: updatedSubcategory,
+      });
     }
-
-    const updatedSubcategory = await Subcategory.findByIdAndUpdate(
-      subcategoryId,
-      updateData,
-      { new: true }
-    );
-
-    if (!updatedSubcategory) {
-      return res.status(404).json({ message: "Subcategory not found" });
-    }
-
-    res.json({
-      message: "Subcategory updated successfully!",
-      subcategory: updatedSubcategory,
-    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
