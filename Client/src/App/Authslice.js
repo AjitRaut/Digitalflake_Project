@@ -1,4 +1,3 @@
-// Features/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
@@ -21,5 +20,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout, setLogin } = authSlice.actions; // Ensure this line is correct
+export const { login, logout, setLogin } = authSlice.actions;
 export default authSlice.reducer;
