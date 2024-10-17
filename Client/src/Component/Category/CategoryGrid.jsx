@@ -63,7 +63,8 @@ const CategoryGrid = () => {
     () => [
       {
         Header: "Id",
-        accessor: "id",
+        accessor: "_id",
+        Cell: ({ row }) => row.index + 1,
       },
       {
         Header: "Category Name",

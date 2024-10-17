@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../Loader/Loader"; // Make sure to import your Loader component
 
 const AddCategory = () => {
   const [categoryName, setCategoryName] = useState("");
-  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
+  const navigate = useNavigate();
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -17,14 +19,15 @@ const AddCategory = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Validation
-    if (!categoryName  ) {
+    if (!categoryName) {
       toast.error("Please fill out the field.");
       return;
     }
-    if(!imageFile){
-      toast.error("Please upload an image.")
+    if (!imageFile) {
+      toast.error("Please upload an image.");
+      return;
     }
 
     const formData = new FormData();
@@ -34,6 +37,8 @@ const AddCategory = () => {
     }
 
     try {
+      setLoading(true); // Set loading to true before API call
+
       const response = await fetch("http://localhost:5000/api/categories", {
         method: "POST",
         body: formData,
@@ -53,18 +58,25 @@ const AddCategory = () => {
       toast.success("Category added successfully!");
       navigate("/app/category");
 
+      // Reset form
       setCategoryName("");
       setImage(null);
       setImageFile(null);
     } catch (error) {
       console.error("Error adding category:", error);
       toast.error("Error adding category. Please try again.");
+    } finally {
+      setLoading(false); // Reset loading state in finally block
     }
   };
 
   return (
     <>
+      
       <form onSubmit={handleSubmit}>
+      {loading ? (
+        <Loader /> // Use the Loader component
+      ) : (
         <div className="bg-white lg:min-h-[85vh] md:min-h-screen p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
           <h2 className="text-xl md:text-2xl font-semibold mb-8">
             Add Category
@@ -138,10 +150,10 @@ const AddCategory = () => {
             </button>
           </div>
         </div>
-      </form>
+     )}
+     </form>
 
-      <ToastContainer
-      />
+      <ToastContainer />
     </>
   );
 };

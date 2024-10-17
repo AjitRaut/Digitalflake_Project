@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../Loader/Loader"; // Import the loader component
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -10,9 +11,11 @@ const EditCategory = () => {
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [status, setStatus] = useState("inactive");
+  const [loading, setLoading] = useState(false); // State to manage loading
 
   useEffect(() => {
     const fetchCategory = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await fetch(
           `http://localhost:5000/api/categories/${id}`
@@ -27,6 +30,8 @@ const EditCategory = () => {
       } catch (error) {
         console.error("Error fetching category:", error);
         toast.error("Error fetching category details");
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -62,16 +67,16 @@ const EditCategory = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setLoading(true); // Start loading
+
     const formData = new FormData();
     formData.append("name", categoryName);
     formData.append("status", status);
     if (imageFile) {
       formData.append("image", imageFile);
     }
-  
+
     try {
-      // Make the PUT request to update the category
       const response = await fetch(
         `http://localhost:5000/api/categories/${id}`,
         {
@@ -79,36 +84,32 @@ const EditCategory = () => {
           body: formData,
         }
       );
-  
-      // Check if the response is not ok
+
       if (!response.ok) {
         const errorData = await response.json();
-  
-        // Check for specific error (category name already exists)
         if (errorData.message === "Category name already exists") {
           toast.error("Category name already exists. Please choose a different name.");
         } else {
           throw new Error(errorData.message || "Failed to update category");
         }
-  
-        return; // Stop execution if there's an error
+        return;
       }
-  
-      // If no error, show success and navigate
+
       toast.success("Category updated successfully!");
       navigate("/app/category");
     } catch (error) {
-      // Handle any unexpected error
       console.error("Error updating category:", error);
       toast.error(error.message || "Error updating category. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
-  
 
   return (
     <>
+      {loading && <Loader />} {/* Show loader if loading */}
       <form onSubmit={handleSubmit}>
-      <div className="bg-white md:p-[9px] pb-24 p-6 shadow-lg rounded-lg max-w-5xl mx-auto">
+        <div className="bg-white md:p-[9px] pb-24 p-6 shadow-lg rounded-lg max-w-5xl mx-auto">
           <h2 className="text-xl md:text-2xl font-semibold mb-8">Edit Category</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -164,7 +165,7 @@ const EditCategory = () => {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 "
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -192,8 +193,7 @@ const EditCategory = () => {
       </form>
 
       {/* Responsive Toastify Container */}
-      <ToastContainer
-      />
+      <ToastContainer />
     </>
   );
 };
