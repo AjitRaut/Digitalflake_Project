@@ -3,22 +3,33 @@ import React from 'react';
 
 const Loader = () => {
   return (
-    <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="loader" aria-live="polite" aria-busy="true"></div>
-      <p className="text-white mt-4">Wait a moment...</p>
+    <div className="absolute inset-0 flex flex-col justify-center items-center bg-gray-900 bg-opacity-75 z-50">
+      <div className="loader-dual-ring" aria-live="polite" aria-busy="true"></div>
+      <p className="text-white mt-4 text-lg">Please wait, loading...</p>
       <style jsx>{`
-        .loader {
-          border: 8px solid rgba(255, 255, 255, 0.3);
-          border-top: 8px solid #00BFFF; /* Change the color here */
-          border-radius: 50%;
-          width: 80px; /* Size of the loader */
-          height: 80px; /* Size of the loader */
-          animation: spin 0.8s linear infinite; /* Slightly faster spin */
+        .loader-dual-ring {
+          display: inline-block;
+          width: 64px;
+          height: 64px;
         }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        .loader-dual-ring:after {
+          content: " ";
+          display: block;
+          width: 48px;
+          height: 48px;
+          margin: 8px;
+          border-radius: 50%;
+          border: 6px solid #00BFFF;
+          border-color: #00BFFF transparent #00BFFF transparent;
+          animation: dual-ring-spin 1.2s linear infinite;
+        }
+        @keyframes dual-ring-spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>
