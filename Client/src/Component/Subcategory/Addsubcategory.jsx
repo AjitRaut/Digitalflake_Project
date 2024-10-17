@@ -1,25 +1,29 @@
+// AddSubcategory.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import Loader from "../Loader/Loader"; // Import your Loader component
 import "react-toastify/dist/ReactToastify.css";
 
 const AddSubcategory = () => {
   const [subcategoryName, setSubcategoryName] = useState("");
-  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false); // State for loading spinner
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/categories");
+        if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {
         toast.error("Error fetching categories.");
-      }
+      } 
     };
 
     fetchCategories();
@@ -28,6 +32,10 @@ const AddSubcategory = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("Image size must be less than 10MB.");
+        return;
+      }
       setImage(URL.createObjectURL(file));
       setImageFile(file);
     }
@@ -52,9 +60,9 @@ const AddSubcategory = () => {
     const formData = new FormData();
     formData.append("subcatname", subcategoryName);
     formData.append("categoryName", categories.find(cat => cat._id === selectedCategory)?.name);
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+    formData.append("image", imageFile);
+
+    setLoading(true); // Show loader while submitting
 
     try {
       const response = await fetch("http://localhost:5000/api/subcategories", {
@@ -64,29 +72,28 @@ const AddSubcategory = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        if (errorData.message === "Subcategory already exists.") {
-          toast.error("Subcategory name already exists.");
-        } else {
-          toast.error(errorData.message || "Error adding subcategory.");
-        }
+        toast.error(errorData.message || "Error adding subcategory.");
         return;
       }
 
-      const data = await response.json();
       toast.success("Subcategory added successfully!");
       setSubcategoryName("");
       setImage(null);
       setImageFile(null);
       setSelectedCategory("");
       navigate("/app/subcategory");
-
     } catch (error) {
       toast.error("Error adding subcategory. Please try again.");
+    } finally {
+      setLoading(false); // Hide loader after submitting
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex-1 pb-24 md:pb-6">
+       {loading ? (
+        <Loader /> // Use the Loader component
+      ) : (
       <div className="bg-white mt-10 p-4 sm:p-6 shadow-lg rounded-lg max-w-5xl mx-auto w-full">
         <h2 className="text-xl font-semibold mb-6 sm:mb-8 text-center md:text-left">
           Add Subcategory
@@ -164,6 +171,7 @@ const AddSubcategory = () => {
             </div>
           </div>
         </div>
+        {loading && <Loader />} {/* Use the Loader component here */}
         <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
           <Link to="/app/subcategory">
             <button
@@ -176,11 +184,13 @@ const AddSubcategory = () => {
           <button
             type="submit"
             className="w-full sm:w-auto px-6 py-2 bg-purple-700 text-white rounded-full"
+            disabled={loading}
           >
             Save
           </button>
         </div>
       </div>
+      )}
       <ToastContainer />
     </form>
   );
