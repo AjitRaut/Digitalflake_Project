@@ -28,7 +28,6 @@ const EditCategory = () => {
         setImage(data.image);
         setStatus(data.status);
       } catch (error) {
-        console.error("Error fetching category:", error);
         toast.error("Error fetching category details");
       } finally {
         setLoading(false); // Stop loading
@@ -98,7 +97,6 @@ const EditCategory = () => {
       toast.success("Category updated successfully!");
       navigate("/app/category");
     } catch (error) {
-      console.error("Error updating category:", error);
       toast.error(error.message || "Error updating category. Please try again.");
     } finally {
       setLoading(false); // Stop loading

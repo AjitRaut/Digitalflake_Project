@@ -33,10 +33,9 @@ const Register = () => {
         if (data.message === "User already exists") {
           toast.error("User already exists");
         }
-        console.error(data.message);
       }
     } catch (error) {
-      console.error("Registration failed:", error);
+      toast.error("Registration failed");
     } finally {
       setSubmitting(false);
     }

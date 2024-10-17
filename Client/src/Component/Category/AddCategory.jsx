@@ -63,7 +63,6 @@ const AddCategory = () => {
       setImage(null);
       setImageFile(null);
     } catch (error) {
-      console.error("Error adding category:", error);
       toast.error("Error adding category. Please try again.");
     } finally {
       setLoading(false); // Reset loading state in finally block

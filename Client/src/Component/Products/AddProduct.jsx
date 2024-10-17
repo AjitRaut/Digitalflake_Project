@@ -27,7 +27,6 @@ const AddProduct = () => {
         const data = await response.json();
         setCategories(data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
         toast.error("Error fetching categories.");
       }
     };
@@ -40,7 +39,6 @@ const AddProduct = () => {
         const response = await axios.get("http://localhost:5000/api/subcategories");
         setSubcategories(response.data);
       } catch (error) {
-        console.error("Error fetching subcategories:", error);
         toast.error("Error fetching subcategories.");
       }
     };
@@ -133,7 +131,6 @@ const AddProduct = () => {
       setImageFile(null);
       setImagePreview("");
     } catch (error) {
-      console.error("Error adding product:", error);
       toast.error("Error adding product. Please try again.");
     } finally {
       setLoading(false); // Hide loader after submitting

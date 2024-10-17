@@ -8,6 +8,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import Shimmerui from "./Shimmerui";
 import categoryIcon from "../../assets/group.png";
 import sortIcon from "../../assets/sort.png";
+import { toast } from "react-toastify";
 
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
@@ -26,7 +27,7 @@ const CategoryGrid = () => {
       const response = await axios.get("http://localhost:5000/api/categories");
       setCategories(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      toast.error("Error fetching categories");
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ const CategoryGrid = () => {
         );
         setShowDeleteModal(false);
       } catch (error) {
-        console.error("Error deleting category:", error);
+        toast.error("Error deleting category");
       }
     }
   };

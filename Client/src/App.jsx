@@ -2,7 +2,6 @@ import React from "react";
 import {
   createBrowserRouter,
   Navigate,
-  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -12,7 +11,7 @@ import Register from "./Component/Auth/Register.jsx";
 import CategoryGrid from "./Component/Category/CategoryGrid.jsx";
 import AddCategory from "./Component/Category/AddCategory.jsx";
 import Products from "./Component/Products/Products.jsx";
-import EditCategory from "./Component/Category/EditCategory.jsx";
+import EditCategory from "./Component/Category/Editcategory.jsx";
 import SubCategoryGrid from "./Component/Subcategory/SubCategoryGrid.jsx";
 import EditSubCategory from "./Component/Subcategory/Editsubcategory.jsx";
 import AddSubCategory from "./Component/Subcategory/Addsubcategory.jsx";

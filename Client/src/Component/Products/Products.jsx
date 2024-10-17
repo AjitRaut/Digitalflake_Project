@@ -8,6 +8,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import ShimmerUI from "./Shimmerui";
 import producticon from "../../assets/product.png";
 import sortIcon from "../../assets/sort.png";
+import { toast } from "react-toastify";
 
 const ProductGrid = () => {
   const [products, setProducts] = useState([]);
@@ -28,7 +29,7 @@ const ProductGrid = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching products:", error);
+        toast.error("Error fetching products");
         setLoading(false);
       });
   };
@@ -55,7 +56,7 @@ const ProductGrid = () => {
         );
         setShowDeleteModal(false);
       } catch (error) {
-        console.error("Error deleting product:", error);
+        toast.error("Error deleting product");
       }
     }
   };
