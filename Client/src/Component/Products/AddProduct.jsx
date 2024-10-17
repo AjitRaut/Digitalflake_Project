@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../Loader/Loader"; // Import your Loader component
+
 
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
@@ -13,6 +15,8 @@ const AddProduct = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(false); // State for loading spinner
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,6 +102,7 @@ const AddProduct = () => {
       toast.error("Please upload an image.");
       return;
     }
+    setLoading(true); // Show loader while submitting
 
     try {
       const response = await axios.get("http://localhost:5000/api/products");
@@ -130,12 +135,17 @@ const AddProduct = () => {
     } catch (error) {
       console.error("Error adding product:", error);
       toast.error("Error adding product. Please try again.");
+    } finally {
+      setLoading(false); // Hide loader after submitting
     }
   };
 
   return (
     <>
       <form onSubmit={handleSubmit}>
+      {loading ? (
+        <Loader /> // Use the Loader component
+      ) : (
         <div className="bg-white min-h-screen lg:min-h-[85vh] p-4 md:p-6 pb-24 shadow-lg rounded-lg max-w-5xl mx-auto">
           <h2 className="text-xl md:text-2xl font-semibold mb-6 md:mb-8">Add Product</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -220,9 +230,9 @@ const AddProduct = () => {
             </button>
           </div>
         </div>
-      </form>
-
+      )}
       <ToastContainer />
+      </form>
     </>
   );
 };
