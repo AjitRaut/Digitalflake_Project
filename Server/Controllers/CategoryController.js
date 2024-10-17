@@ -1,13 +1,14 @@
 const Category = require("../Models/Category");
 const Counter = require("../Models/counter");
 const mongoose = require("mongoose");
-const cloudinary = require('../Config/cloudinary'); // Import Cloudinary config
-const { PassThrough } = require('stream');
+const cloudinary = require("../Config/cloudinary"); // Import Cloudinary config
+const { PassThrough } = require("stream");
 
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
+// Add Category with Cloudinary Upload
 // Add Category with Cloudinary Upload
 const addCategory = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ const addCategory = async (req, res) => {
     name = capitalizeFirstLetter(name.trim());
 
     const existingCategory = await Category.findOne({
-      name: { $regex: new RegExp(`^${name}$`, 'i') }
+      name: { $regex: new RegExp(`^${name}$`, "i") },
     });
 
     if (existingCategory) {
@@ -27,27 +28,44 @@ const addCategory = async (req, res) => {
     }
 
     // Upload image to Cloudinary directly from buffer
-    const uploadResult = await cloudinary.uploader.upload_stream({
-      folder: 'categories',
-    }, async (error, result) => {
-      if (error) {
-        return res.status(500).json({ message: "Error uploading image to Cloudinary", error: error.message });
+    const uploadResult = await cloudinary.uploader.upload_stream(
+      {
+        folder: "categories",
+      },
+      async (error, result) => {
+        if (error) {
+          return res
+            .status(500)
+            .json({
+              message: "Error uploading image to Cloudinary",
+              error: error.message,
+            });
+        }
+
+        // Increment the category sequence in the Counter
+        const counter = await Counter.findOneAndUpdate(
+          {},
+          { $inc: { categorySeq: 1 } }, // Increment the categorySeq
+          { new: true, upsert: true }
+        );
+        const newCategoryId = counter.categorySeq; // Get the incremented categorySeq
+
+        const newCategory = new Category({
+          id: newCategoryId, // Set the id to newCategoryId
+          name,
+          image: result.secure_url,
+          status: "inactive",
+        });
+
+        await newCategory.save();
+        res
+          .status(201)
+          .json({
+            message: "Category added successfully!",
+            category: newCategory,
+          });
       }
-
-      // Increment the counter
-      const counter = await Counter.findOneAndUpdate({}, { $inc: { seq: 1 } }, { new: true, upsert: true });
-      const newCategoryId = counter.seq;
-
-      const newCategory = new Category({
-        id: newCategoryId,
-        name,
-        image: result.secure_url,
-        status: "inactive",
-      });
-
-      await newCategory.save();
-      res.status(201).json({ message: "Category added successfully!", category: newCategory });
-    });
+    );
 
     // Create a stream from the buffer
     const bufferStream = new PassThrough();
@@ -98,9 +116,14 @@ const updateCategory = async (req, res) => {
 
     if (name) {
       const trimmedName = capitalizeFirstLetter(name.trim());
-      const existingCategory = await Category.findOne({ name: trimmedName, _id: { $ne: categoryId } });
+      const existingCategory = await Category.findOne({
+        name: trimmedName,
+        _id: { $ne: categoryId },
+      });
       if (existingCategory) {
-        return res.status(400).json({ message: "Category name already exists" });
+        return res
+          .status(400)
+          .json({ message: "Category name already exists" });
       }
       updateData.name = trimmedName;
     }
@@ -110,30 +133,38 @@ const updateCategory = async (req, res) => {
     }
 
     if (req.file) {
-      const uploadResult = await cloudinary.uploader.upload_stream({
-        folder: 'categories',
-      }, async (error, result) => {
-        if (error) {
-          return res.status(500).json({ message: "Error uploading image to Cloudinary", error: error.message });
+      const uploadResult = await cloudinary.uploader.upload_stream(
+        {
+          folder: "categories",
+        },
+        async (error, result) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({
+                message: "Error uploading image to Cloudinary",
+                error: error.message,
+              });
+          }
+
+          updateData.image = result.secure_url;
+
+          const updatedCategory = await Category.findByIdAndUpdate(
+            categoryId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+          );
+
+          if (!updatedCategory) {
+            return res.status(404).json({ message: "Category not found" });
+          }
+
+          res.status(200).json({
+            message: "Category updated successfully!",
+            category: updatedCategory,
+          });
         }
-
-        updateData.image = result.secure_url;
-
-        const updatedCategory = await Category.findByIdAndUpdate(
-          categoryId,
-          { $set: updateData },
-          { new: true, runValidators: true }
-        );
-
-        if (!updatedCategory) {
-          return res.status(404).json({ message: "Category not found" });
-        }
-
-        res.status(200).json({
-          message: "Category updated successfully!",
-          category: updatedCategory,
-        });
-      });
+      );
 
       const bufferStream = new PassThrough();
       bufferStream.end(req.file.buffer);
@@ -160,23 +191,39 @@ const updateCategory = async (req, res) => {
 };
 
 // Delete Category
+// Delete Category and update sequence
 const deleteCategory = async (req, res) => {
   try {
     const id = req.params.id;
-    const category = await Category.findByIdAndDelete(id);
-    if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+    const categoryToDelete = await Category.findById(id);
+
+    if (!categoryToDelete) {
+      return res.status(404).json({ message: "Category not found" });
     }
-    res.json({ message: 'Category deleted successfully' });
+
+    // Delete the category
+    await Category.findByIdAndDelete(id);
+
+    // Decrement the category sequence in the Counter
+    await Counter.findOneAndUpdate({}, { $inc: { categorySeq: -1 } });
+
+    // Update the id of categories with a higher sequence number
+    await Category.updateMany(
+      { id: { $gt: categoryToDelete.id } },
+      { $inc: { id: -1 } }
+    );
+
+    res.json({ message: "Category deleted successfully and sequence updated" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting category', error: error.message });
+    res.status(500).json({ message: "Error deleting category", error: error.message });
   }
 };
+
 
 module.exports = {
   addCategory,
   getCategories,
   getCategoryById,
   updateCategory,
-  deleteCategory
+  deleteCategory,
 };

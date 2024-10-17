@@ -170,13 +170,25 @@ exports.deleteSubcategory = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedSubcategory = await Subcategory.findByIdAndDelete(id);
-    if (!deletedSubcategory) {
+    const subcategoryToDelete = await Subcategory.findById(id);
+    if (!subcategoryToDelete) {
       return res.status(404).json({ message: "Subcategory not found" });
     }
 
-    res.status(200).json({ message: "Subcategory deleted successfully" });
+    // Delete the subcategory
+    await Subcategory.findByIdAndDelete(id);
+
+    // Decrement the subcategory sequence in the Counter
+    await Counter.findOneAndUpdate({}, { $inc: { subcategorySeq: -1 } });
+
+    // Update the id of subcategories with a higher sequence number
+    await Subcategory.updateMany(
+      { id: { $gt: subcategoryToDelete.id } },
+      { $inc: { id: -1 } }
+    );
+
+    res.status(200).json({ message: "Subcategory deleted successfully and sequence updated" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete subcategory" });
+    res.status(500).json({ error: "Failed to delete subcategory", message: error.message });
   }
 };

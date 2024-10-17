@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const subcategorySchema = new mongoose.Schema(
   {
+    id: {
+      type: Number,
+      required: true,
+      unique: true, 
+    },
     subcatname: {
       type: String,
       required: true,

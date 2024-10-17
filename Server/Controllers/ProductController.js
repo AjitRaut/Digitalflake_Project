@@ -172,13 +172,26 @@ exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    const deletedProduct = await Product.findByIdAndDelete(productId);
-    if (!deletedProduct) {
+    const productToDelete = await Product.findById(productId);
+    if (!productToDelete) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: "Product deleted successfully" });
+    // Delete the product
+    await Product.findByIdAndDelete(productId);
+
+    // Decrement the product sequence in the Counter
+    await Counter.findOneAndUpdate({}, { $inc: { productSeq: -1 } });
+
+    // Update the IDs of products with a higher sequence number
+    await Product.updateMany(
+      { id: { $gt: productToDelete.id } },
+      { $inc: { id: -1 } }
+    );
+
+    res.status(200).json({ message: "Product deleted successfully and sequence updated" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete product", error: error.message });
   }
 };
+
