@@ -8,6 +8,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import ShimmerUI from "./Shimmerui";
 import subcategoryicon from "../../assets/list.png";
 import sortIcon from "../../assets/sort.png";
+import { toast } from "react-toastify";
 
 const SubcategoryGrid = () => {
   const [subcategories, setSubcategories] = useState([]);
@@ -27,7 +28,7 @@ const SubcategoryGrid = () => {
       const response = await axios.get("http://localhost:5000/api/categories");
       setCategories(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      toast.error("Error fetching categories",);
     }
   };
 
@@ -39,7 +40,7 @@ const SubcategoryGrid = () => {
       setSubcategories(response.data);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching subcategories:", error);
+      toast.error("Error fetching subcategories");
       setLoading(false);
     }
   };
@@ -81,7 +82,7 @@ const SubcategoryGrid = () => {
         );
         setShowDeleteModal(false);
       } catch (error) {
-        console.error("Error deleting subcategory:", error);
+        toast.error("Error deleting subcategory");
       }
     }
   };

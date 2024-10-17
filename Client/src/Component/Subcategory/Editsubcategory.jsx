@@ -62,30 +62,49 @@ const EditSubcategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Show loader when submitting
-    const formData = new FormData();
-    formData.append("subcatname", subcategoryName);
-    formData.append("categoryName", selectedCategory); // Use categoryName
-    formData.append("status", status);
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
+  
     try {
-      const response = await fetch(
+      // Fetch all subcategories to check if the name already exists
+      const response = await fetch("http://localhost:5000/api/subcategories");
+      if (!response.ok) throw new Error("Failed to fetch subcategories");
+  
+      const subcategories = await response.json();
+  
+      // Simple check for duplicate subcategory name in subcategories
+      const isDuplicate = subcategories.some(
+        (subcategory) => subcategory.subcatname.toLowerCase() === subcategoryName.toLowerCase() && subcategory._id !== categoryMongoId
+      );
+  
+      if (isDuplicate) {
+        toast.error("Subcategory name already exists.");
+        setLoading(false); // Hide loader and stop submission
+        return;
+      }
+  
+      // Continue with submission if no duplicate found
+      const formData = new FormData();
+      formData.append("subcatname", subcategoryName);
+      formData.append("categoryName", selectedCategory); // Use categoryName
+      formData.append("status", status);
+  
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+  
+      const updateResponse = await fetch(
         `http://localhost:5000/api/subcategories/${categoryMongoId}`,
         {
           method: "PUT",
           body: formData,
         }
       );
-
-      if (!response.ok) {
-        const errorData = await response.json();
+  
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
         toast.error(errorData.message || "Error updating subcategory.");
         return;
       }
-
+  
       toast.success("Subcategory updated successfully!");
       navigate("/app/subcategory");
     } catch (error) {
@@ -94,7 +113,7 @@ const EditSubcategory = () => {
       setLoading(false); // Hide loader after submission
     }
   };
-
+  
   return (
     <form onSubmit={handleSubmit} className="flex-1 pb-24 md:pb-1">
       {loading ? (
