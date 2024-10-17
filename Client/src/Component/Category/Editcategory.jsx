@@ -87,7 +87,9 @@ const EditCategory = () => {
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.message === "Category name already exists") {
-          toast.error("Category name already exists. Please choose a different name.");
+          toast.error(
+            "Category name already exists. Please choose a different name."
+          );
         } else {
           throw new Error(errorData.message || "Failed to update category");
         }
@@ -97,7 +99,9 @@ const EditCategory = () => {
       toast.success("Category updated successfully!");
       navigate("/app/category");
     } catch (error) {
-      toast.error(error.message || "Error updating category. Please try again.");
+      toast.error(
+        error.message || "Error updating category. Please try again."
+      );
     } finally {
       setLoading(false); // Stop loading
     }
@@ -108,12 +112,16 @@ const EditCategory = () => {
       {loading && <Loader />} {/* Show loader if loading */}
       <form onSubmit={handleSubmit}>
         <div className="bg-white md:p-[9px] pb-24 p-6 shadow-lg rounded-lg max-w-5xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-semibold mb-8">Edit Category</h2>
+          <h2 className="text-xl md:text-2xl font-semibold mb-8">
+            Edit Category
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Category Name Input */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category Name
+              </label>
               <input
                 type="text"
                 value={categoryName}
@@ -125,11 +133,15 @@ const EditCategory = () => {
 
             {/* Image Upload with Design */}
             <div className="col-span-1 flex flex-col items-center">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Upload Image
+              </label>
               <label htmlFor="file-input" className="cursor-pointer">
                 <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center hover:border-purple-500 transition-colors">
                   <p className="text-gray-500 text-sm">Upload an image</p>
-                  <p className="text-gray-400 text-xs mt-1">Maximum size: 10MB</p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    Maximum size: 10MB
+                  </p>
                 </div>
               </label>
               <input
@@ -159,7 +171,9 @@ const EditCategory = () => {
 
           {/* Status Selection */}
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
@@ -175,21 +189,20 @@ const EditCategory = () => {
             <button
               type="button"
               onClick={() => navigate("/app/category")}
-              className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 w-full md:w-auto"
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition duration-200"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-6 py-2 bg-purple-700 text-white rounded-full w-full md:w-auto"
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-200"
             >
-              Save
+              Update
             </button>
           </div>
         </div>
       </form>
-
       {/* Responsive Toastify Container */}
       <ToastContainer />
     </>
