@@ -82,7 +82,7 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validation
     if (!productName) {
       toast.error("Product name is required.");
@@ -101,28 +101,34 @@ const AddProduct = () => {
       return;
     }
     setLoading(true); // Show loader while submitting
-
+  
     try {
+      // Fetch existing products
       const response = await axios.get("http://localhost:5000/api/products");
-      const productNames = response.data.map(product => product.productName);
-
-      if (productNames.includes(productName)) {
+      const productNames = response.data.map(product => product.productName.toLowerCase());
+  
+      // Check if the product name already exists (case-insensitive)
+      if (productNames.includes(productName.toLowerCase())) {
         toast.error("Product name already exists.");
+        setLoading(false); // Hide loader if validation fails
         return;
       }
-
+  
+      // FormData to handle file uploads
       const formData = new FormData();
       formData.append("productName", productName);
       formData.append("categoryName", selectedCategory);
       formData.append("subcategoryName", selectedSubcategory);
       formData.append("image", imageFile);
-
+  
+      // Post the new product data
       await axios.post("http://localhost:5000/api/products", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+  
+      // Success feedback
       toast.success("Product added successfully!");
       navigate("/app/products");
       setProductName("");
@@ -136,6 +142,7 @@ const AddProduct = () => {
       setLoading(false); // Hide loader after submitting
     }
   };
+  
 
   return (
     <>

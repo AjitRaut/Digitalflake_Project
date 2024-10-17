@@ -84,26 +84,25 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validation: Ensure product name is provided
     if (!productName) {
       toast.error("Product name is required.");
       return;
     }
-
-    // Fetch existing products to check for duplicates
+  
     try {
+      // Fetch existing products to check for duplicates
       const response = await axios.get("http://localhost:5000/api/products");
-      const productNames = response.data.map(product => product.productName);
-
-      // Exclude the current product's name to allow the user to keep it unchanged
-      const existingNames = productNames.filter(name => name !== productName);
-
-      if (existingNames.includes(productName)) {
+      const productNames = response.data
+        .filter(product => product._id !== id) // Exclude current product
+        .map(product => product.productName.toLowerCase());
+  
+      if (productNames.includes(productName.toLowerCase())) {
         toast.error("Product name already exists.");
         return;
       }
-
+  
       // Proceed with updating the product
       const formData = new FormData();
       formData.append("productName", productName);
@@ -113,18 +112,18 @@ const EditProduct = () => {
       if (imageFile) {
         formData.append("image", imageFile);
       }
-
+  
       setLoading(true); // Start loading before API call
       const updateResponse = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "PUT",
         body: formData,
       });
-
+  
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();
         throw new Error(errorData.message || "Failed to update product");
       }
-
+  
       toast.success("Product updated successfully!");
       navigate("/app/products");
     } catch (error) {
@@ -133,6 +132,7 @@ const EditProduct = () => {
       setLoading(false); // Stop loading after the operation
     }
   };
+  
 
   if (loading) {
     return <Loader />; // Show loader while fetching data
