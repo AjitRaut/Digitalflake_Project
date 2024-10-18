@@ -81,6 +81,7 @@ const SubcategoryGrid = () => {
           )
         );
         setShowDeleteModal(false);
+        fetchSubcategories();
       } catch (error) {
         toast.error("Error deleting subcategory");
       }

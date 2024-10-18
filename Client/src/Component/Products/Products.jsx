@@ -55,6 +55,7 @@ const ProductGrid = () => {
           prevProducts.filter((product) => product._id !== deleteId)
         );
         setShowDeleteModal(false);
+        fetchProducts();
       } catch (error) {
         toast.error("Error deleting product");
       }
