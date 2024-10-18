@@ -143,7 +143,6 @@ const AddProduct = () => {
     }
   };
   
-
   return (
     <>
       <form onSubmit={handleSubmit}>
