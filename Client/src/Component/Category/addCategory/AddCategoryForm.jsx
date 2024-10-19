@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ImageUpload from "../../../hooks/useImageupload"; // Custom hook for image upload
+import ImageUpload from "../../../hooks/useImageupload"; 
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,8 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 const AddCategoryForm = ({ onSubmit }) => {
   const [categoryName, setCategoryName] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const { image, handleImageUpload } = ImageUpload(); // Use the custom hook
-
+  const { image, handleImageUpload } = ImageUpload(); 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 

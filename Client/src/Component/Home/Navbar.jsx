@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "../../App/Authslice";
+import { logout } from "../../store/Authslice";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false); // State to track mobile menu
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

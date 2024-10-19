@@ -52,7 +52,7 @@ const CategoryGrid = () => {
           prevCategories.filter((category) => category._id !== deleteId)
         );
         setShowDeleteModal(false);
-        fetchCategories(); // Refetch the categories after successful deletion
+        fetchCategories(); 
         toast.success("Category deleted successfully");
       } catch (error) {
         toast.error("Error deleting category");

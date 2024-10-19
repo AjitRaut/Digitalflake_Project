@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { login as loginAction } from "../../App/Authslice"; // Update this import as per your file structure
+import { login as loginAction } from "../../store/Authslice"; // Update this import as per your file structure
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa"; // Import eye icons
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

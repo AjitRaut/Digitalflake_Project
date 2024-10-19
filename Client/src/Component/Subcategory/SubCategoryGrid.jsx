@@ -9,6 +9,7 @@ import ShimmerUI from "./Shimmerui";
 import subcategoryicon from "../../assets/list.png";
 import sortIcon from "../../assets/sort.png";
 import { toast } from "react-toastify";
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 const SubcategoryGrid = () => {
   const [subcategories, setSubcategories] = useState([]);
@@ -247,20 +248,7 @@ const SubcategoryGrid = () => {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-5 rounded-lg shadow-xl max-w-sm w-full mx-2">
             <div className="flex items-center mb-4">
-              <svg
-                className="w-6 h-6 text-red-500 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                ></path>
-              </svg>
+            <ExclamationTriangleIcon className="w-6 h-6 text-red-500 mr-2" />
               <h3 className="text-lg font-semibold">Delete</h3>
             </div>
             <p className="mb-4 text-gray-600">
