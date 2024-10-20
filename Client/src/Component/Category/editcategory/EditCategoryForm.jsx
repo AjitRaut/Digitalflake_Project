@@ -131,7 +131,6 @@ const EditCategoryForm = ({ onSubmit, initialData, existingCategories }) => {
           Save
         </button>
       </div>
-
       <ToastContainer />
     </form>
   );
