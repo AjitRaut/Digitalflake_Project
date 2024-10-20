@@ -7,7 +7,9 @@ const Loader = () => {
       <p className="text-white mt-6 text-lg tracking-wide animate-pulse">
         Please wait, loading...
       </p>
-      <style jsx>{`
+
+      {/* Tailwind CSS styles for the loader orb */}
+      <style>{`
         .loader-orb {
           width: 50px;
           height: 50px;
