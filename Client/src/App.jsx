@@ -1,24 +1,20 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter,Navigate,RouterProvider} from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./App/store";
+import store from "./store/store.js";
 import Login from "./Component/Auth/Login.jsx";
 import Register from "./Component/Auth/Register.jsx";
-import CategoryGrid from "./Component/Category/CategoryGrid.jsx";
-import AddCategory from "./Component/Category/AddCategory.jsx";
 import Products from "./Component/Products/Products.jsx";
-import EditCategory from "./Component/Category/Editcategory.jsx";
-import SubCategoryGrid from "./Component/Subcategory/SubCategoryGrid.jsx";
-import EditSubCategory from "./Component/Subcategory/Editsubcategory.jsx";
-import AddSubCategory from "./Component/Subcategory/Addsubcategory.jsx";
 import AddProduct from "./Component/Products/AddProduct.jsx";
 import EditProduct from "./Component/Products/EditProduct.jsx";
 import Home from "./Component/Home/Home.jsx";
 import AppLayout from "./Component/Home/AppLayout.jsx";
+import AddCategory from "./Component/Category/AddCategory/Addcategory.jsx";
+import EditCategory from "./Component/Category/editcategory/EditCategory.jsx";
+import CategoryGrid from "./Component/Category/categorygrid/CategoryGrid.jsx";
+import AddSubcategory from "./Component/Subcategory/addsubcategory/AddSubcategory.jsx";
+import EditSubcategory from "./Component/Subcategory/editsubcategory/EditSubcategory.jsx";
+import SubcategoryGrid from "./Component/Subcategory/subcategorygrid/Subcategory.jsx";
 
 const AppRouter = createBrowserRouter([
   {
@@ -59,27 +55,27 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "addcategory",
-        element: <AddCategory />,
+        element: <AddCategory/>,
       },
       {
         path: "editcategory/:id",
         element: <EditCategory />,
       },
       {
-        path: "products",
-        element: <Products />,
-      },
-      {
         path: "subcategory",
-        element: <SubCategoryGrid />,
+        element: <SubcategoryGrid />,
       },
-      {
+       {
         path: "addsubcategory",
-        element: <AddSubCategory />,
+        element: <AddSubcategory />,
       },
       {
         path: "editsubcategory/:id",
-        element: <EditSubCategory />,
+        element: <EditSubcategory />,
+      },
+      {
+        path: "products",
+        element: <Products />,
       },
       {
         path: "addproduct",
