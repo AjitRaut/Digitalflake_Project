@@ -33,7 +33,7 @@ const AddCategoryForm = ({ onSubmit }) => {
       onSubmit={handleFormSubmit}
       className="p-4 sm:p-6 md:pb-24 shadow-lg rounded-lg max-w-lg sm:max-w-xl md:max-w-4xl mx-auto w-full pb-24" // Added pb-24 for bottom padding
     >
-      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-center md:text-left">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6 md:mb-8 md:text-left">
         Add Category
       </h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

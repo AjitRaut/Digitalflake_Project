@@ -14,8 +14,10 @@ const AddCategory = () => {
   useEffect(() => {
     const fetchExistingCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/categories");
-        setExistingCategories(response.data); // Set existing categories from API
+        const response = await axios.get(
+          "http://localhost:5000/api/categories"
+        );
+        setExistingCategories(response.data);
       } catch (error) {
         toast.error("Error fetching existing categories.");
       }
@@ -27,29 +29,24 @@ const AddCategory = () => {
   const handleSubmit = async (formData) => {
     const categoryName = formData.get("name");
 
-    // Check if the category name already exists
     const categoryExists = existingCategories.some(
       (category) => category.name.toLowerCase() === categoryName.toLowerCase()
     );
 
     if (categoryExists) {
       toast.error("Category name already exists.");
-      return; // Stop further execution if the category name exists
+      return;
     }
 
-    setLoading(true); // Show loader when submitting
+    setLoading(true);
     try {
       await axios.post("http://localhost:5000/api/categories", formData);
       toast.success("Category added successfully!");
       navigate("/app/category");
     } catch (error) {
-      const errorMessage =
-        error.response?.status === 400
-          ? error.response.data.message
-          : "Error adding category. Please try again.";
-      toast.error(errorMessage);
+      toast.error("Error adding category. Please try again.");
     } finally {
-      setLoading(false); // Hide loader after submission
+      setLoading(false); 
     }
   };
 

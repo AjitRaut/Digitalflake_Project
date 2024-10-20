@@ -120,7 +120,6 @@ const CategoryGrid = () => {
         filteredCategories={filteredCategories}
         searchTerm={searchTerm}
       />
-
       <DeleteModal showDeleteModal={showDeleteModal}  setShowDeleteModal={setShowDeleteModal} confirmDelete={confirmDelete}/>
     </div>
   );

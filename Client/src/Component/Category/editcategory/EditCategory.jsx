@@ -28,7 +28,7 @@ const EditCategory = () => {
     const fetchExistingCategories = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/categories`);
-        setExistingCategories(response.data); // Set existing categories from API
+        setExistingCategories(response.data); 
       } catch (error) {
         toast.error("Error fetching existing categories.");
       }
@@ -39,16 +39,15 @@ const EditCategory = () => {
   }, [id]);
 
   const handleSubmit = async (formData) => {
-    setLoading(true); // Show loader when submitting
+    setLoading(true); 
     try {
       await axios.put(`http://localhost:5000/api/categories/${id}`, formData);
       toast.success("Category updated successfully!");
       navigate("/app/category");
     } catch (error) {
-      const errorMessage = error.response?.status === 400 ? error.response.data.message : "Error updating category. Please try again.";
-      toast.error(errorMessage);
+      toast.error("Error updating category. Please try again.");
     } finally {
-      setLoading(false); // Hide loader after submission
+      setLoading(false); 
     }
   };
 
@@ -60,10 +59,12 @@ const EditCategory = () => {
         <EditCategoryForm
           onSubmit={handleSubmit}
           initialData={initialData}
-          existingCategories={existingCategories} // Pass existing categories to form
+          existingCategories={existingCategories}
         />
       ) : (
+        <div className="flex justify-center items-center">
         <p>No category data found.</p>
+        </div>
       )}
       <ToastContainer />
     </>
