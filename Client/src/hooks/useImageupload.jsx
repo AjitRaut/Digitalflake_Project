@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 const useImageUpload = () => {
@@ -24,10 +24,23 @@ const useImageUpload = () => {
         return;
       }
 
-      setImage(URL.createObjectURL(file));
+      if (image) {
+        URL.revokeObjectURL(image);
+      }
+
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
       setImageFile(file);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (image) {
+        URL.revokeObjectURL(image);
+      }
+    };
+  }, [image]);
 
   return { image, handleImageUpload };
 };
