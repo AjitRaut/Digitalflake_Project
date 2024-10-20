@@ -1,25 +1,16 @@
-// src/components/CategoryGrid.js
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useTable, useSortBy } from "react-table";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import categoryIcon from "../../../assets/group.png";
-import DeleteModal from "./DeleteModel"; // New component
-import SearchBar from "./SearchBar"; // New component
-import CategoryTable from "./CategoryTable"; // New component
-import useCategories from "../../../hooks/useCategories"; // Custom hook
+import DeleteModal from "./DeleteModel"; 
+import SearchBar from "./SearchBar"; 
+import CategoryTable from "./CategoryTable"; 
+import useCategories from "../../../hooks/useCategories";
 
 const CategoryGrid = () => {
-  const {
-    categories,
-    loading,
-    showDeleteModal,
-    setShowDeleteModal,
-    setDeleteId,
-    fetchCategories,
-    confirmDelete,
-  } = useCategories();
+  const {categories,loading,showDeleteModal,setShowDeleteModal,setDeleteId,fetchCategories,confirmDelete,} = useCategories();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -109,8 +100,7 @@ const CategoryGrid = () => {
         </div>
 
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <SearchBar setSearchTerm={setSearchTerm} />{" "}
-          {/* Integrated SearchBar component */}
+          <SearchBar setSearchTerm={setSearchTerm} />
           <Link to="/app/addcategory">
             <button className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition duration-200 w-full md:w-auto">
               Add New
@@ -131,11 +121,7 @@ const CategoryGrid = () => {
         searchTerm={searchTerm}
       />
 
-      <DeleteModal
-        showDeleteModal={showDeleteModal}
-        setShowDeleteModal={setShowDeleteModal}
-        confirmDelete={confirmDelete}
-      />
+      <DeleteModal showDeleteModal={showDeleteModal}  setShowDeleteModal={setShowDeleteModal} confirmDelete={confirmDelete}/>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ImageUpload from "../../../hooks/useImageupload"; 
+import ImageUpload from "../../../hooks/useImageupload";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 const AddCategoryForm = ({ onSubmit }) => {
   const [categoryName, setCategoryName] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const { image, handleImageUpload } = ImageUpload(); 
+  const { image, handleImageUpload } = ImageUpload();
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ const AddCategoryForm = ({ onSubmit }) => {
             placeholder="Enter category name"
           />
         </div>
-        {/* Image Upload Section */}
+
         <div className="col-span-1 flex flex-col items-center">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Upload Image
@@ -79,7 +79,6 @@ const AddCategoryForm = ({ onSubmit }) => {
         </div>
       </div>
 
-      {/* Cancel & Save Buttons */}
       <div className="flex flex-col sm:flex-row justify-end mt-6 sm:mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
         <Link to="/app/category">
           <button
@@ -96,7 +95,6 @@ const AddCategoryForm = ({ onSubmit }) => {
           Save
         </button>
       </div>
-
       <ToastContainer />
     </form>
   );

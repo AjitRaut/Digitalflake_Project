@@ -1,4 +1,3 @@
-// src/components/CategoryTable.js
 import React from "react";
 import Shimmerui from "../Shimmerui";
 import sortIcon from "../../../assets/sort.png";

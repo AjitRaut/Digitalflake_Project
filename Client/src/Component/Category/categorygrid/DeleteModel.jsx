@@ -1,4 +1,3 @@
-// src/components/DeleteModal.js
 import React from "react";
 
 const DeleteModal = ({ showDeleteModal, setShowDeleteModal, confirmDelete }) => {
