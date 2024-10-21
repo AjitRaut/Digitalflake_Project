@@ -24,7 +24,7 @@ const useGetSubcategories = () => {
     fetchSubcategories();
   }, []);
 
-  return { subcategories, loading };
+  return { subcategories, loading , fetchSubcategories};
 };
 
 export default useGetSubcategories;
