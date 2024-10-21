@@ -20,7 +20,7 @@ const CategorySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: 'inactive', // Set default status to 'inactive'
+    default: 'inactive', 
   },
 }, { timestamps: true });
 
