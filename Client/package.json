@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "npm run dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
     "@reduxjs/toolkit": "^2.2.7",
     "@tanstack/react-table": "^8.20.5",
     "axios": "^1.7.7",
@@ -24,6 +26,7 @@
     "react-router-dom": "^6.26.2",
     "react-table": "^7.8.0",
     "react-toastify": "^10.0.5",
+    "styled-jsx": "^5.1.6",
     "yup": "^1.4.0"
   },
   "devDependencies": {
