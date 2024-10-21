@@ -1,6 +1,5 @@
-// components/DeleteModal.js
 import React from "react";
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 const DeleteModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
@@ -14,10 +13,16 @@ const DeleteModal = ({ show, onClose, onConfirm }) => {
         </div>
         <p className="mb-4 text-gray-600">Are you sure you want to delete?</p>
         <div className="flex justify-end">
-          <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md mr-2" onClick={onClose}>
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md mr-2"
+            onClick={onClose}
+          >
             Cancel
           </button>
-          <button className="px-4 py-2 bg-purple-600 text-white rounded-md" onClick={onConfirm}>
+          <button
+            className="px-4 py-2 bg-purple-600 text-white rounded-md"
+            onClick={onConfirm}
+          >
             Confirm
           </button>
         </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Loader from '../../Loader/Loader'; 
-import EditSubcategoryForm from "./EditSubcategoryForm"; // Import the form component
+import Loader from "../../Loader/Loader";
+import EditSubcategoryForm from "./EditSubcategoryForm";
 import axios from "axios";
 
 const EditSubcategory = () => {
@@ -16,7 +16,9 @@ const EditSubcategory = () => {
   useEffect(() => {
     const fetchSubcategory = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/subcategories/${id}`);
+        const response = await axios.get(
+          `http://localhost:5000/api/subcategories/${id}`
+        );
         setInitialData(response.data);
       } catch (error) {
         toast.error("Error fetching subcategory details.");
@@ -27,7 +29,9 @@ const EditSubcategory = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/categories");
+        const response = await axios.get(
+          "http://localhost:5000/api/categories"
+        );
         setCategories(response.data);
       } catch (error) {
         toast.error("Error fetching categories.");
@@ -41,11 +45,14 @@ const EditSubcategory = () => {
   const handleSubmit = async (formData) => {
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/api/subcategories/${initialData._id}`, formData);
+      await axios.put(
+        `http://localhost:5000/api/subcategories/${id}`,
+        formData
+      );
       toast.success("Subcategory updated successfully!");
       navigate("/app/subcategory");
     } catch (error) {
-        toast.error("Error updating subcategory. Please try again.");
+      toast.error("Error updating subcategory. Please try again.");
     } finally {
       setLoading(false);
     }

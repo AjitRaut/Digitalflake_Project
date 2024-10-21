@@ -1,4 +1,3 @@
-// AddSubcategoryForm.js
 import React, { useState } from "react";
 import ImageUpload from "../../../hooks/useImageupload";
 import ImageUploadSection from "./ImageUploadSection"; 
@@ -62,28 +61,37 @@ const AddSubcategoryForm = ({ categories, onSubmit }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select Category
-          </label>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
-            required
-          >
-            <option value="" disabled>
-              Select a category
-            </option>
-            {categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
+  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+    Select Category
+  </label>
+  <select
+    value={selectedCategory}
+    id="category"
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+    required
+  >
+    <option value="" disabled>
+      Select a category
+    </option>
+    {categories.length > 0 ? (
+      categories.map((category) => (
+        <option key={category._id} value={category._id}>
+          {category.name}
+        </option>
+      ))
+    ) : (
+      <option value="" disabled>
+        No categories available
+      </option>
+    )}
+  </select>
+</div>
+
+
         <ImageUploadSection
           image={image}
-          handleImageUpload={(e) => handleImageUpload(e, setImageFile)} // Pass the function
+          handleImageUpload={(e) => handleImageUpload(e, setImageFile)} 
         />
       </div>
       <div className="flex flex-col sm:flex-row justify-end mt-6 space-y-4 sm:space-y-0 sm:space-x-4">

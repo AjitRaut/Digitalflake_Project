@@ -1,4 +1,3 @@
-// ImageUploadSection.js
 import React from "react";
 
 const ImageUploadSection = ({ image, handleImageUpload }) => {

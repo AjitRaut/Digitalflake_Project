@@ -1,4 +1,3 @@
-// components/SearchBar.js
 import React from "react";
 import { BiSearch } from "react-icons/bi";
 

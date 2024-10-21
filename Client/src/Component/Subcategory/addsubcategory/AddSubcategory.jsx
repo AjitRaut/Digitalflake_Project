@@ -20,7 +20,7 @@ const AddSubcategory = () => {
           axios.get("http://localhost:5000/api/categories"),
           axios.get("http://localhost:5000/api/subcategories"),
         ]);
-  
+
         setCategories(categoriesResponse.data);
         setExistingSubcategories(subcategoriesResponse.data);
       } catch (error) {
@@ -29,25 +29,25 @@ const AddSubcategory = () => {
         setLoading(false);
       }
     };
-  
+
     fetchCategoriesAndSubcategories();
   }, []);
 
   const handleSubmit = async (formData) => {
     const subcatname = formData.get("subcatname");
-  
+
     const subcategoryExists = existingSubcategories.some(
-      (subcategory) => subcategory.subcatname.toLowerCase() === subcatname.toLowerCase()
+      (subcategory) =>
+        subcategory.subcatname.toLowerCase() === subcatname.toLowerCase()
     );
-  
+
     if (subcategoryExists) {
       toast.error("Subcategory name already exists.");
       return;
     }
-  
+
     setLoading(true);
     try {
-      // Debugging log to ensure formData has the correct data
       await axios.post("http://localhost:5000/api/subcategories", formData);
       toast.success("Subcategory added successfully!");
       navigate("/app/subcategory");
@@ -57,11 +57,14 @@ const AddSubcategory = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <>
-      {loading ? <Loader /> : <AddSubcategoryForm onSubmit={handleSubmit} categories={categories} />}
+      {loading ? (
+        <Loader />
+      ) : (
+        <AddSubcategoryForm onSubmit={handleSubmit} categories={categories} />
+      )}
       <ToastContainer />
     </>
   );

@@ -1,10 +1,8 @@
-// components/SubcategoryGrid.js
 import React, { useEffect, useState, useMemo } from "react";
 import useGetSubcategories from "../../../hooks/useGetSubcategories";
 import Header from "./Header";
-import SubcategoryTable from "./Subcategorytable"; 
+import SubcategoryTable from "./Subcategorytable";
 import DeleteModal from "./Deletemodel";
-import Shimmerui from "../Shimmerui";
 import { Link } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -12,15 +10,14 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const SubcategoryGrid = () => {
-  const { subcategories, loading } = useGetSubcategories();
+  const { subcategories, loading, fetchSubcategories } = useGetSubcategories();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filteredSubcategories, setFilteredSubcategories] =
-    useState(subcategories); // Local state for filtered subcategories
+    useState(subcategories);
 
   useEffect(() => {
-    // Update filtered subcategories whenever subcategories or search term changes
     const newFilteredSubcategories = subcategories.filter(
       (subcategory) =>
         subcategory.subcatname &&
@@ -103,6 +100,7 @@ const SubcategoryGrid = () => {
 
         setShowDeleteModal(false);
         setDeleteId(null);
+        fetchSubcategories();
       } catch (error) {
         toast.error("Error deleting subcategory");
       }
@@ -112,7 +110,11 @@ const SubcategoryGrid = () => {
   return (
     <div className="p-4">
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <SubcategoryTable data={filteredSubcategories} columns={columns} loading={loading} />
+      <SubcategoryTable
+        data={filteredSubcategories}
+        columns={columns}
+        loading={loading}
+      />
       <DeleteModal
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
