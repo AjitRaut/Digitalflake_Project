@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ImageUpload from "../../../hooks/useImageupload";
-import ImageUploadSection from "./ImageUploadSection"; // Import the new component
+import ImageUploadSection from "./ImageUploadSection";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,8 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 const EditCategoryForm = ({ onSubmit, initialData, existingCategories }) => {
   const [categoryName, setCategoryName] = useState(initialData?.name || "");
   const [imageFile, setImageFile] = useState(null);
-  const { image, handleImageUpload } = ImageUpload(initialData?.image || ""); // Initialize with existing image
-  const [status, setStatus] = useState(initialData?.status || "active"); // Initialize status
+  const { image, handleImageUpload } = ImageUpload(initialData?.image || ""); 
+  const [status, setStatus] = useState(initialData?.status || "active");
 
   useEffect(() => {
     if (initialData?.image) {
@@ -62,7 +62,7 @@ const EditCategoryForm = ({ onSubmit, initialData, existingCategories }) => {
             type="text"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
-            className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
             placeholder="Enter category name"
           />
         </div>
