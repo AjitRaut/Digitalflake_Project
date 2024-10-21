@@ -1,4 +1,3 @@
-// routes/user.js
 const express = require('express');
 const { register, login,requestPasswordReset } = require('../Controllers/authcontroller');
 

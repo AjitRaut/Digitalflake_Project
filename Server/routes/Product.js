@@ -11,10 +11,10 @@ const {
 const router = express.Router();
 
 
-router.post("/", upload.single("image"), createProduct); // Keep createProduct unchanged
-router.get("/", getProducts); // Route to get all products
-router.get("/:id", getProduct); // Route to get product by ID
-router.put("/:id", upload.single("image"), updateProduct); // Route to update product
-router.delete("/:id", deleteProduct); // Keep deleteProduct unchanged
+router.post("/", upload.single("image"), createProduct); 
+router.get("/", getProducts); 
+router.get("/:id", getProduct); 
+router.put("/:id", upload.single("image"), updateProduct); 
+router.delete("/:id", deleteProduct); 
 
 module.exports = router;
