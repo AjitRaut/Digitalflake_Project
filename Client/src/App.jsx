@@ -1,12 +1,13 @@
 import React from "react";
-import {createBrowserRouter,Navigate,RouterProvider} from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import Login from "./Component/Auth/Login.jsx";
 import Register from "./Component/Auth/Register.jsx";
-import Products from "./Component/Products/Products.jsx";
-import AddProduct from "./Component/Products/AddProduct.jsx";
-import EditProduct from "./Component/Products/EditProduct.jsx";
 import Home from "./Component/Home/Home.jsx";
 import AppLayout from "./Component/Home/AppLayout.jsx";
 import AddCategory from "./Component/Category/AddCategory/Addcategory.jsx";
@@ -15,6 +16,9 @@ import CategoryGrid from "./Component/Category/categorygrid/CategoryGrid.jsx";
 import AddSubcategory from "./Component/Subcategory/addsubcategory/AddSubcategory.jsx";
 import EditSubcategory from "./Component/Subcategory/editsubcategory/EditSubcategory.jsx";
 import SubcategoryGrid from "./Component/Subcategory/subcategorygrid/Subcategory.jsx";
+import AddProduct from "./Component/Products/addproduct/AddProduct.jsx";
+import EditProduct from "./Component/Products/editproduct/EditProduct.jsx";
+import ProductGrid from "./Component/Products/product/ProductGrid.jsx";
 
 const AppRouter = createBrowserRouter([
   {
@@ -41,7 +45,7 @@ const AppRouter = createBrowserRouter([
     path: "/app",
     element: (
       <Provider store={store}>
-        <AppLayout/>
+        <AppLayout />
       </Provider>
     ),
     children: [
@@ -55,7 +59,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "addcategory",
-        element: <AddCategory/>,
+        element: <AddCategory />,
       },
       {
         path: "editcategory/:id",
@@ -65,7 +69,7 @@ const AppRouter = createBrowserRouter([
         path: "subcategory",
         element: <SubcategoryGrid />,
       },
-       {
+      {
         path: "addsubcategory",
         element: <AddSubcategory />,
       },
@@ -75,7 +79,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "products",
-        element: <Products />,
+        element: <ProductGrid />,
       },
       {
         path: "addproduct",
