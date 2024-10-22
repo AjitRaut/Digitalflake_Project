@@ -1,6 +1,6 @@
 import React from "react";
 import { useTable, useSortBy } from "react-table";
-import sortIcon from "../../../assets/sort.png";
+import sortIcon from "../../../assets/Sort.png";
 import Shimmerui from "../Shimmerui";
 
 const SubcategoryTable = ({ data, columns, loading }) => {
