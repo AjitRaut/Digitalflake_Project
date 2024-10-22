@@ -7,7 +7,7 @@ import Register from "./Component/Auth/register/Register.jsx";
 import Home from "./Component/Home/Home.jsx";
 import AppLayout from "./Component/Home/AppLayout.jsx";
 import Category from "./Component/Category/category/Category.jsx";
-import AddCategory from "./Component/Category/AddCategory/Addcategory.jsx";
+import AddCategory from "./Component/Category/addCategory/Addcategory.jsx";
 import EditCategory from "./Component/Category/editcategory/EditCategory.jsx";
 import Subcategory from "./Component/Subcategory/subcategory/Subcategory.jsx";
 import AddSubcategory from "./Component/Subcategory/addsubcategory/AddSubcategory.jsx";
