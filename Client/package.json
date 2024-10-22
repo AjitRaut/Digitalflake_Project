@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "start": "npm run dev",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+ "scripts": {
+  "dev": "vite",
+  "start": "npm run dev",
+  "lint": "eslint .",
+  "preview": "vite preview",
+  "build": "vite build"
+},
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "@reduxjs/toolkit": "^2.2.7",

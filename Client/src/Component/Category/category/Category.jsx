@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useTable, useSortBy } from "react-table";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import categoryIcon from "../../../assets/group.png";
+import categoryIcon from "../../../assets/Group.png";
 import DeleteModal from "./DeleteModel"; 
 import SearchBar from "./Searchbar"; 
 import CategoryTable from "./CategoryTable"; 
