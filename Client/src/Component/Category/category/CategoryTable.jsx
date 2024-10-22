@@ -1,6 +1,6 @@
 import React from "react";
 import Shimmerui from "../Shimmerui";
-import sortIcon from "../../../assets/sort.png";
+import sortIcon from "../../../assets/Sort.png";
 
 const CategoryTable = ({
   loading,
