@@ -3,7 +3,7 @@ import { useTable, useSortBy } from "react-table";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import sortIcon from "../../../assets/sort.png";
+import sortIcon from "../../../assets/Sort.png";
 import ShimmerUI from "../Shimmerui";
 
 const ProductTable = ({ products, handleDelete, loading }) => {
