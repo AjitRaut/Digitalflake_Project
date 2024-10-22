@@ -17,7 +17,7 @@ const EditSubcategory = () => {
     const fetchSubcategory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/subcategories/${id}`
+          `https://digitalflake-project.onrender.com/api/subcategories/${id}`
         );
         setInitialData(response.data);
       } catch (error) {
@@ -30,7 +30,7 @@ const EditSubcategory = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/categories"
+          "https://digitalflake-project.onrender.com/api/categories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -46,10 +46,9 @@ const EditSubcategory = () => {
     setLoading(true);
     try {
       await axios.put(
-        `http://localhost:5000/api/subcategories/${id}`,
+        `https://digitalflake-project.onrender.com/api/subcategories/${id}`,
         formData
       );
-      toast.success("Subcategory updated successfully!");
       navigate("/app/subcategory");
     } catch (error) {
       toast.error("Error updating subcategory. Please try again.");

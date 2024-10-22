@@ -90,7 +90,7 @@ const Subcategory = () => {
     if (deleteId) {
       try {
         await axios.delete(
-          `http://localhost:5000/api/subcategories/${deleteId}`
+          `https://digitalflake-project.onrender.com/api/subcategories/${deleteId}`
         );
         toast.success("Subcategory deleted successfully");
 

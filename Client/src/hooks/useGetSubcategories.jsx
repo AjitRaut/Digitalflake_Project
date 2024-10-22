@@ -10,7 +10,7 @@ const useGetSubcategories = () => {
   const fetchSubcategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/subcategories"
+        "https://digitalflake-project.onrender.com/api/subcategories"
       );
       setSubcategories(response.data);
       setLoading(false);

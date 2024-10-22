@@ -10,7 +10,7 @@ const useProducts = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/products");
+      const response = await axios.get("https://digitalflake-project.onrender.com/api/products");
       setProducts(response.data);
     } catch (error) {
       toast.error("Error fetching products");
@@ -21,7 +21,7 @@ const useProducts = () => {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`https://digitalflake-project.onrender.com/api/products/${id}`);
       setProducts((prevProducts) => prevProducts.filter((product) => product._id !== id));
       toast.success("Product deleted successfully");
     } catch (error) {

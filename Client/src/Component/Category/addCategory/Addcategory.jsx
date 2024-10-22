@@ -15,7 +15,7 @@ const AddCategory = () => {
     const fetchExistingCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/categories"
+          "https://digitalflake-project.onrender.com/api/categories"
         );
         setExistingCategories(response.data);
       } catch (error) {
@@ -40,8 +40,7 @@ const AddCategory = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/categories", formData);
-      toast.success("Category added successfully!");
+      await axios.post("https://digitalflake-project.onrender.com/api/categories", formData);
       navigate("/app/category");
     } catch (error) {
       toast.error("Error adding category. Please try again.");

@@ -13,14 +13,13 @@ const FormSubmitHandler = ({
 }) => {
   const checkSubcategoryExists = async (name) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/subcategories");
+      const response = await axios.get("https://digitalflake-project.onrender.com/api/subcategories");
       const subcategoryNames = response.data
         .filter(subcat => subcat._id !== initialData._id) 
         .map(subcat => subcat.subcatname.toLowerCase());
 
       return subcategoryNames.includes(name.toLowerCase());
     } catch (error) {
-      console.error("Error fetching subcategory names:", error);
       toast.error("Failed to check subcategory names. Please try again.");
       return false;
     }

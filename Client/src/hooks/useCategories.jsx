@@ -12,7 +12,7 @@ const useCategories = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/categories");
+      const response = await axios.get("https://digitalflake-project.onrender.com/api/categories");
       setCategories(response.data);
     } catch (error) {
       toast.error("Error fetching categories");
@@ -24,7 +24,7 @@ const useCategories = () => {
   const confirmDelete = async () => {
     if (deleteId) {
       try {
-        await axios.delete(`http://localhost:5000/api/categories/${deleteId}`);
+        await axios.delete(`https://digitalflake-project.onrender.com/api/categories/${deleteId}`);
         setCategories((prevCategories) =>
           prevCategories.filter((category) => category._id !== deleteId)
         );

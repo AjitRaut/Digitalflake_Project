@@ -21,7 +21,7 @@ const FormSubmitHandler = ({
     }
 
     try {
-      const response = await axios.get("http://localhost:5000/api/products");
+      const response = await axios.get("https://digitalflake-project.onrender.com/api/products");
       const productNames = response.data
         .filter((product) => product._id !== initialData._id)
         .map((product) => product.productName.toLowerCase());
