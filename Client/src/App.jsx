@@ -1,24 +1,20 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter,Navigate,RouterProvider}from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
-import Login from "./Component/Auth/Login.jsx";
-import Register from "./Component/Auth/Register.jsx";
+import Login from "./Component/Auth/login/Login.jsx";
+import Register from "./Component/Auth/register/Register.jsx";
 import Home from "./Component/Home/Home.jsx";
 import AppLayout from "./Component/Home/AppLayout.jsx";
+import Category from "./Component/Category/category/Category.jsx";
 import AddCategory from "./Component/Category/AddCategory/Addcategory.jsx";
 import EditCategory from "./Component/Category/editcategory/EditCategory.jsx";
-import CategoryGrid from "./Component/Category/categorygrid/CategoryGrid.jsx";
+import Subcategory from "./Component/Subcategory/subcategory/Subcategory.jsx";
 import AddSubcategory from "./Component/Subcategory/addsubcategory/AddSubcategory.jsx";
 import EditSubcategory from "./Component/Subcategory/editsubcategory/EditSubcategory.jsx";
-import SubcategoryGrid from "./Component/Subcategory/subcategorygrid/Subcategory.jsx";
+import Product from "./Component/Products/product/Product.jsx";
 import AddProduct from "./Component/Products/addproduct/AddProduct.jsx";
 import EditProduct from "./Component/Products/editproduct/EditProduct.jsx";
-import ProductGrid from "./Component/Products/product/ProductGrid.jsx";
 
 const AppRouter = createBrowserRouter([
   {
@@ -55,7 +51,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "category",
-        element: <CategoryGrid />,
+        element: <Category />,
       },
       {
         path: "addcategory",
@@ -67,7 +63,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "subcategory",
-        element: <SubcategoryGrid />,
+        element: <Subcategory />,
       },
       {
         path: "addsubcategory",
@@ -79,7 +75,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "products",
-        element: <ProductGrid />,
+        element: <Product />,
       },
       {
         path: "addproduct",

@@ -9,7 +9,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const SubcategoryGrid = () => {
+const Subcategory = () => {
   const { subcategories, loading, fetchSubcategories } = useGetSubcategories();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState(null);
@@ -124,4 +124,4 @@ const SubcategoryGrid = () => {
   );
 };
 
-export default SubcategoryGrid;
+export default Subcategory;

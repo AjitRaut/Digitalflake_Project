@@ -6,7 +6,7 @@ import DeleteModal from "./DeleteModel";
 import producticon from "../../../assets/product.png";
 import { Link } from "react-router-dom";
 
-const ProductGrid = () => {
+const Product = () => {
   const { products, loading, deleteProduct, fetchProducts } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState(null);
@@ -66,4 +66,4 @@ const ProductGrid = () => {
   );
 };
 
-export default ProductGrid;
+export default Product;

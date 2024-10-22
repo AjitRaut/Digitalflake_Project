@@ -9,7 +9,7 @@ import SearchBar from "./Searchbar";
 import CategoryTable from "./CategoryTable"; 
 import useCategories from "../../../hooks/useCategories";
 
-const CategoryGrid = () => {
+const Category = () => {
   const {categories,loading,showDeleteModal,setShowDeleteModal,setDeleteId,fetchCategories,confirmDelete,} = useCategories();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -125,4 +125,4 @@ const CategoryGrid = () => {
   );
 };
 
-export default CategoryGrid;
+export default Category;
