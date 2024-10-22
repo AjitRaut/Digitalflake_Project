@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import useProducts from "../../../hooks/useProducts";
 import ProductTable from "./ProductTable";
 import SearchBar from "./SearchBar";
-import DeleteModal from "./DeleteModel";
+import DeleteModal from "./Deletemodel";
 import producticon from "../../../assets/product.png";
 import { Link } from "react-router-dom";
 
